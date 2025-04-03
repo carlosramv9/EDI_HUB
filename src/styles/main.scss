@@ -1,0 +1,37 @@
+@import '@/styles/variables';
+@import '@/styles/mixins';
+
+// Reset básico
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family-sans;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $text-color;
+  background-color: $background-color;
+}
+
+// Clases de utilidad
+.container {
+  @include container;
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+// Botones
+.button {
+  @include button-base;
+  background-color: $primary-color;
+  color: white;
+  
+  &.secondary {
+    background-color: $secondary-color;
+  }
+} 
