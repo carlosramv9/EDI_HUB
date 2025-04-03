@@ -1,15 +1,10 @@
-
-export default async function HomePage() {
-
+export default function Home() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">
-        </h1>
-        <p className="text-lg mb-8 text-red-500">
-          Bienvenido a EDIHub - Tu plataforma de gestión EDI
-        </p>
-      </div>
+    <div className="flex min-h-full flex-col items-center justify-center p-24">
+      <h1 className="text-4xl font-bold">Welcome to EDIHub</h1>
+      <p className="mt-4 text-xl text-gray-600">
+        Your central hub for electronic data interchange
+      </p>
     </div>
-  );
+  )
 }
