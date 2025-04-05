@@ -5,8 +5,12 @@ import InputField from './components/InputField'
 import Button from './components/Button'
 import PasswordToggle from './components/PasswordToggle'
 import { useLanguage } from '@/hooks/useLanguage'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@/navigation'
+import { useAppDispatch } from '@/app/store'
+import { setCredentials } from '@/store/features/auth/authSlice'
 
-type TranslationKey = 
+type TranslationKey =
   | 'title'
   | 'email'
   | 'emailPlaceholder'
@@ -23,10 +27,15 @@ type Translations = {
 const Login = () => {
   const { toggleLanguage, isSpanish } = useLanguage()
   const [showPassword, setShowPassword] = useState(false)
+
+  const dispatch = useAppDispatch();
+  const router = useRouter()
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
@@ -40,11 +49,18 @@ const Login = () => {
     e.preventDefault()
     // Aquí iría la lógica de inicio de sesión
     console.log('Form submitted:', formData)
+
+    dispatch(setCredentials({
+      user: {
+        id: '1',
+        email: formData.email,
+        name: 'John Doe'
+      },
+      token: '1234567890'
+    }))
   }
 
-  const t = (key: TranslationKey) => {
-    return isSpanish ? translations.es[key] : translations.en[key];
-  }
+  const t = useTranslations("auth.login");
 
   return (
     <div className='w-full h-full flex items-center justify-center bg-gray-50 py-8'>
@@ -58,7 +74,7 @@ const Login = () => {
             {isSpanish ? 'EN' : 'ES'}
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className='space-y-4'>
           <InputField
             label={t('email')}
@@ -86,39 +102,8 @@ const Login = () => {
             {t('signIn')}
           </Button>
         </form>
-
-        <p className='mt-4 text-center text-sm text-gray-600'>
-          {t('noAccount')}{' '}
-          <a href='#' className='text-blue-600 hover:underline'>
-            {t('signUp')}
-          </a>
-        </p>
       </div>
     </div>
   )
 }
-
-const translations: Record<'es' | 'en', Translations> = {
-  es: {
-    title: 'Iniciar sesión en tu cuenta',
-    email: 'Correo electrónico',
-    emailPlaceholder: 'Ingresa tu correo electrónico',
-    password: 'Contraseña',
-    passwordPlaceholder: 'Ingresa tu contraseña',
-    signIn: 'Iniciar sesión',
-    noAccount: '¿No tienes una cuenta?',
-    signUp: 'Regístrate ahora'
-  },
-  en: {
-    title: 'Log in to your account',
-    email: 'Email',
-    emailPlaceholder: 'Enter your email',
-    password: 'Password',
-    passwordPlaceholder: 'Enter your password',
-    signIn: 'Sign in',
-    noAccount: 'Don\'t have an account?',
-    signUp: 'Sign up now'
-  }
-}
-
 export default Login

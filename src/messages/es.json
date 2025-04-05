@@ -20,11 +20,14 @@
     "login": {
       "title": "Inicia sesión en tu cuenta",
       "email": "Correo electrónico",
+      "emailPlaceholder": "Ingresa tu correo electrónico",
       "password": "Contraseña",
+      "passwordPlaceholder": "Ingresa tu contraseña",
       "submit": "Iniciar sesión",
       "noAccount": "¿No tienes una cuenta?",
       "signUp": "Regístrate ahora",
-      "forgotPassword": "¿Olvidaste tu contraseña?"
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "signIn": "Iniciar sesión"
     },
     "register": {
       "title": "Crea tu cuenta",

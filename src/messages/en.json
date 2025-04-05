@@ -26,7 +26,8 @@
       "submit": "Sign in",
       "noAccount": "Don't have an account?",
       "signUp": "Sign up now",
-      "forgotPassword": "Forgot your password?"
+      "forgotPassword": "Forgot your password?",
+      "signIn": "Sign in"
     },
     "register": {
       "title": "Create your account",
