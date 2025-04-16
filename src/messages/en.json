@@ -18,9 +18,13 @@
   },
   "auth": {
     "login": {
-      "title": "Log in to your account",
+      "loginTitle": "Log in",
+      "description": "Welcome back! Please log in to your account.",
+      "title": "Log in",
       "email": "Email",
       "emailPlaceholder": "Enter your email",
+      "username": "Username",
+      "usernamePlaceholder": "Enter your username",
       "password": "Password",
       "passwordPlaceholder": "Enter your password",
       "submit": "Sign in",
@@ -49,5 +53,9 @@
     "signIn": "Sign in",
     "noAccount": "Don't have an account?",
     "signUp": "Sign up now"
+  },
+  "titles": {
+    "testTitle": "Test title",
+    "testDescription": "Test description"
   }
-} 
+}

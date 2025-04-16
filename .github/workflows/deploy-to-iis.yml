@@ -1,0 +1,77 @@
+name: Deploy to IIS
+
+on:
+  push:
+    branches: [ main ]  # o master, según tu rama principal
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18.x'
+  WEBSITE_CONTENT_PATH: '${{ secrets.IIS_SERVER_PATH }}'
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest  # Usamos Windows ya que deployaremos a IIS
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build Application
+      run: npm run build
+      env:
+        CI: false
+
+    - name: Create Deploy Package
+      run: |
+        mkdir deploy
+        xcopy /E /I .next deploy\.next
+        xcopy /E /I public deploy\public
+        xcopy /E /I node_modules deploy\node_modules
+        copy server.js deploy\
+        copy next.config.mjs deploy\
+        copy package.json deploy\
+        copy public\web.config deploy\
+
+    - name: Deploy to IIS
+      shell: powershell
+      env:
+        IIS_SERVER_HOST: ${{ secrets.IIS_SERVER_HOST }}
+        IIS_SERVER_USERNAME: ${{ secrets.IIS_SERVER_USERNAME }}
+        IIS_SERVER_PASSWORD: ${{ secrets.IIS_SERVER_PASSWORD }}
+        IIS_WEBSITE_NAME: 'Default Web Site'
+        IIS_APP_PATH: 'edihub'  # Ajusta esto según tu configuración
+      run: |
+        # Crear credenciales seguras
+        $password = ConvertTo-SecureString $env:IIS_SERVER_PASSWORD -AsPlainText -Force
+        $credentials = New-Object System.Management.Automation.PSCredential ($env:IIS_SERVER_USERNAME, $password)
+
+        # Crear sesión remota
+        $session = New-PSSession -ComputerName $env:IIS_SERVER_HOST -Credential $credentials
+
+        # Detener la aplicación en IIS
+        Invoke-Command -Session $session -ScriptBlock {
+          Import-Module WebAdministration
+          Stop-WebAppPool -Name "$using:env:IIS_WEBSITE_NAME\$using:env:IIS_APP_PATH"
+        }
+
+        # Copiar archivos
+        Copy-Item -Path "deploy\*" -Destination $env:WEBSITE_CONTENT_PATH -ToSession $session -Recurse -Force
+
+        # Iniciar la aplicación en IIS
+        Invoke-Command -Session $session -ScriptBlock {
+          Import-Module WebAdministration
+          Start-WebAppPool -Name "$using:env:IIS_WEBSITE_NAME\$using:env:IIS_APP_PATH"
+        }
+
+        # Cerrar sesión
+        Remove-PSSession $session 

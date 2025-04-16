@@ -18,9 +18,13 @@
   },
   "auth": {
     "login": {
-      "title": "Inicia sesión en tu cuenta",
+      "loginTitle": "Iniciar sesión",
+      "description": "¡Bienvenido de nuevo! Por favor inicia sesión en tu cuenta.",
+      "title": "Iniciar sesión",
       "email": "Correo electrónico",
       "emailPlaceholder": "Ingresa tu correo electrónico",
+      "username": "Nombre de usuario",
+      "usernamePlaceholder": "Ingresa tu nombre de usuario",
       "password": "Contraseña",
       "passwordPlaceholder": "Ingresa tu contraseña",
       "submit": "Iniciar sesión",
@@ -49,5 +53,9 @@
     "signIn": "Iniciar sesión",
     "noAccount": "¿No tienes una cuenta?",
     "signUp": "Regístrate ahora"
+  },
+  "titles": {
+    "testTitle": "Título de prueba",
+    "testDescription": "Descripción de prueba"
   }
-} 
+}

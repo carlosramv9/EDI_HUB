@@ -3,10 +3,13 @@ import createMiddleware from 'next-intl/middleware';
 import { locales } from './i18n/config';
 
 export default async function middleware(request: NextRequest) {
-    // Step 1: Use the incoming request (example)
-    const defaultLocale = request.headers.get('x-your-custom-locale') || 'en';
+    console.log('middleware');
+    const defaultLocale = 'es';
+    // Si estamos en la raíz, redirigir al locale por defecto
+    if (request.nextUrl.pathname === '/') {
+        return NextResponse.redirect(new URL('/es/authenticate/login', request.url));
+    }
 
-    // Step 2: Create and call the next-intl middleware (example)
     const handleI18nRouting = createMiddleware({
         locales,
         defaultLocale: 'es',

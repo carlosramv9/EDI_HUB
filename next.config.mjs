@@ -3,28 +3,27 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
-const config = {
-  reactStrictMode: true,
-  images: {
-    unoptimized: true
-  },
-  trailingSlash: true,
-  sassOptions: {
-    includePaths: ['./src/styles'],
-    prependData: `@import "@/styles/variables.scss"; @import "@/styles/mixins.scss";`
-  },
-  env: {
-    // development: "http://localhost:5116",
-    development: "http://yarzaycia.dyndns.org:8084/server",
-    // production: "http://localhost:5116",
-    production: "http://yarzaycia.dyndns.org:8084/server",
-    ACCESS_TOKEN: "accessToken",
-    VER: '0.11.1'
-  },
-  webpack: (config) => {
-    config.resolve.fallback = { fs: false };
-    return config;
-  }
+const nextConfig = {
+    reactStrictMode: true,
+    output: 'standalone',
+    basePath: '/edihub', // Ajusta esto al nombre de tu subaplicación en IIS
+    images: {
+        domains: ['localhost'],
+    },
+    env: {
+        development: "https://localhost:7205/api",
+        production: "/api", // Esto se ajustará según tu configuración de proxy en IIS
+        HEADER_TOKEN: "xtoken"
+    },
+    webpack: (config, { isServer }) => {
+        if (!isServer) {
+            config.resolve.fallback = {
+                fs: false,
+                module: false,
+            }
+        }
+        return config
+    }
 };
 
-export default withNextIntl(config); 
+export default withNextIntl(nextConfig); 
