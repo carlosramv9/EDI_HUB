@@ -24,7 +24,7 @@ const Login = () => {
   useEffect(() => {
     if (userData) {
       // window.location.href = '/dashboard'
-      navigate.push('/test')
+      navigate.push('/schedules')
     }
   }, [userData])
 

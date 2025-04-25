@@ -37,10 +37,9 @@ export default async function RootLayout({ children, params: { locale } }: RootL
             <AuthProvider>
               <Providers>
                 <div className="h-full flex flex-col">
-                  <main className="flex-1 h-full">
+                  <main className="flex-1">
                     {children}
                   </main>
-                  <Footer />
                 </div>
               </Providers>
             </AuthProvider>

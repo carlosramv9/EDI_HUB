@@ -5,6 +5,7 @@ import Sidebar from './Sidebar';
 import { useSidebar } from '../../context/SidebarContext';
 import Header from './Header';
 import { Metadata } from 'next';
+import Footer from '../shared/Footer';
 
 export const metadata: Metadata = {
     title: 'EDI HUB MANAGEMENT',
@@ -23,6 +24,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             <div className={`flex flex-col flex-1 transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-64'}`}>
                 <Header />
                 <main className="flex-1 p-4 bg-white">{children}</main>
+                <Footer />
             </div>
         </div>
     );

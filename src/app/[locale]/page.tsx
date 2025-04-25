@@ -1,10 +1,13 @@
 'use client'
-import { redirect } from 'next/navigation';
+import { redirect } from '@/navigation';
 
 export default function Home() {
   // const pathname = usePathname();
 
-  // redirect('/authenticate/login');
+  redirect({
+    href: '/authenticate/login',
+    locale: 'en'
+  });
 
   // {
   //   pathname.includes('/authenticate') ? (

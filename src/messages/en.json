@@ -57,5 +57,40 @@
   "titles": {
     "testTitle": "Test title",
     "testDescription": "Test description"
-  }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "labels": {
+      "title": "Labels",
+      "create": "Create Label",
+      "list": "Label List"
+    },
+    "sents": {
+      "title": "Sents",
+      "asnGenerator": "ASN Generator"
+    },
+    "schedules": {
+      "title": "Schedules",
+      "list": "Schedule List",
+      "create": "Create Schedule"
+    },
+    "settings": {
+      "title": "Settings",
+      "profile": "Profile",
+      "preferences": "Preferences"
+    }
+  },
+  "scheduleTitle": "Shipping Schedule",
+  "orderNumber": "Order #",
+  "partNumber": "Part #",
+  "partName": "Name",
+  "shipDate": "Date",
+  "quantity": "Quantity",
+  "shipTo": "Destination",
+  "edit": "Edit",
+  "printSkidManifest": "Print Skid Manifest Label",
+  "printProductionParts": "Print Production Parts Label",
+  "printPalletMaster": "Print Pallet Master Label",
+  "printPackaging": "Print Packaging Requirements",
+  "generateASN": "Generate ASN"
 }

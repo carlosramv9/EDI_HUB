@@ -20,55 +20,60 @@ import {
   MoreVertical,
 } from "lucide-react"
 import { useSidebar } from "@/context/SidebarContext"
+import Image from "next/image"
+
+interface NavItem {
+  title: string;
+  href: string;
+  icon: any;
+  submenu?: boolean;
+  submenuItems?: { title: string; href: string }[];
+}
 
 // Define the navigation items
-const mainNavItems = [
+const mainNavItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Audience",
-    href: "/audience",
+    title: "Labels",
+    href: "/labels",
     icon: Users,
-    submenu: false,
+    submenu: true,
+    submenuItems: [
+      { title: "All Labels", href: "/labels" },
+      { title: "Create Label", href: "/labels/create" }
+    ]
   },
   {
-    title: "Posts",
-    href: "/posts",
+    title: "Sents",
+    href: "/sents",
     icon: FileText,
   },
   {
     title: "Schedules",
     href: "/schedules",
     icon: Calendar,
-  },
-  {
-    title: "Income",
-    href: "/income",
-    icon: BarChart3,
     submenu: true,
     submenuItems: [
-      { title: "Earnings", href: "/income/earnings" },
-      { title: "Refunds", href: "/income/refunds" },
-      { title: "Declines", href: "/income/declines" },
-      { title: "Payouts", href: "/income/payouts" },
-    ],
+      { title: "View Schedule", href: "/schedules" },
+      { title: "Create Schedule", href: "/schedules/create" }
+    ]
   },
 ]
 
-const settingsNavItems = [
-  {
-    title: "Notification",
-    href: "/notification",
-    icon: Bell,
-  },
+const settingsNavItems: NavItem[] = [
   {
     title: "Settings",
     href: "/settings",
     icon: Settings,
-    submenu: false,
+    submenu: true,
+    submenuItems: [
+      { title: "General", href: "/settings/general" },
+      { title: "Profile", href: "/settings/profile" }
+    ]
   },
 ]
 
@@ -86,12 +91,10 @@ export default function Sidebar() {
   // Initialize refs for menu items
   useEffect(() => {
     mainNavItems.forEach(item => {
-      if (!item.submenu) {
-        divRefs.current[item.title] = createRef();
-      }
+      divRefs.current[item.title] = divRefs.current[item.title] || createRef();
     });
     settingsNavItems.forEach(item => {
-      linkRefs.current[item.title] = createRef();
+      linkRefs.current[item.title] = linkRefs.current[item.title] || createRef();
     });
   }, []);
 
@@ -129,7 +132,12 @@ export default function Sidebar() {
 
   // Toggle theme
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light")
+    let mode = document.documentElement.classList.toggle("dark");
+    mode
+      ? (localStorage.theme = "dark")
+      : (localStorage.theme = "light");
+    // setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(mode ? 'light' : 'dark')
   }
 
   // Check if a nav item is active
@@ -145,9 +153,8 @@ export default function Sidebar() {
           <Link
             key={item.title}
             href={item.href}
-            className={`block py-2 text-sm ${
-              isActive(item.href) ? "text-gray-900 font-medium" : "text-gray-600 hover:text-gray-900"
-            }`}
+            className={`block py-2 text-sm ${isActive(item.href) ? "text-gray-900 font-medium" : "text-gray-600 hover:text-gray-900"
+              }`}
           >
             {item.title}
           </Link>
@@ -165,14 +172,14 @@ export default function Sidebar() {
     const topPosition = parentRect ? parentRect.top : 'auto';
 
     return (
-      <div 
+      <div
         className="fixed left-16 bg-white rounded-md shadow-lg border border-gray-200 py-2 w-40"
         style={{ top: typeof topPosition === 'number' ? `${topPosition}px` : 'auto' }}
       >
         {items.map((item) => (
-          <Link 
-            key={item.title} 
-            href={item.href} 
+          <Link
+            key={item.title}
+            href={item.href}
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             {item.title}
@@ -188,19 +195,23 @@ export default function Sidebar() {
 
     useEffect(() => {
       const updatePosition = () => {
-        if (parentRef.current) {
+        if (parentRef?.current) {
           const rect = parentRef.current.getBoundingClientRect();
           setPosition(rect.top);
         }
       };
 
-      updatePosition();
-      window.addEventListener('scroll', updatePosition);
-      return () => window.removeEventListener('scroll', updatePosition);
+      if (parentRef?.current) {
+        updatePosition();
+        window.addEventListener('scroll', updatePosition);
+        return () => window.removeEventListener('scroll', updatePosition);
+      }
     }, [parentRef]);
 
+    if (!parentRef?.current) return null;
+
     return (
-      <div 
+      <div
         className="fixed ml-2 left-16 px-2 py-1 text-sm text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity"
         style={{ top: `${position}px` }}
       >
@@ -213,32 +224,18 @@ export default function Sidebar() {
     <div className="relative">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-10 flex flex-col bg-white border-r border-gray-200 transition-all duration-300 ${
-          collapsed ? "w-16" : "w-64"
-        }`}
+        className={`fixed inset-y-0 left-0 z-10 flex flex-col bg-[#f5f5f5] dark:bg-[#202025] border-r border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-64"
+          }`}
       >
         {/* Logo */}
         <div className="flex items-center h-16 px-4 border-b border-gray-200">
           {!collapsed ? (
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                    />
-                  </svg>
+                <div className="relative w-8 h-8 rounded-full flex items-center justify-center">
+                  <Image src="/ai-hub.svg" alt="" className="w-6 h-6" width={24} height={24} />
                 </div>
-                <span className="ml-2 text-lg font-semibold">Logoipsum</span>
+                <span className="ml-2 text-lg font-semibold">EDI Hub</span>
               </div>
               <button onClick={() => setCollapsed(true)}>
                 <MoreVertical className="w-5 h-5 text-gray-500" />
@@ -278,11 +275,10 @@ export default function Sidebar() {
                   {/* Main nav item */}
                   <div
                     ref={!item.submenu ? divRefs.current[item.title] : null}
-                    className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
-                      isActive(item.href)
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
+                    className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${isActive(item.href)
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      }`}
                     onClick={() => (item.submenu && !collapsed ? toggleSubmenu(item.title) : null)}
                     data-item={item.title}
                   >
@@ -339,11 +335,10 @@ export default function Sidebar() {
                   <Link
                     ref={linkRefs.current[item.title]}
                     href={item.href}
-                    className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.href)
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
+                    className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive(item.href)
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      }`}
                   >
                     <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500`} />
                     {!collapsed && <span>{item.title}</span>}
@@ -365,9 +360,8 @@ export default function Sidebar() {
             <div className="flex items-center justify-between">
               <button
                 onClick={toggleTheme}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md ${
-                  theme === "light" ? "bg-gray-100 text-gray-900" : "text-gray-600"
-                }`}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md ${theme === "light" ? "bg-gray-100 text-gray-900" : "text-gray-600"
+                  }`}
               >
                 <div className="flex items-center">
                   <Sun className="w-4 h-4 mr-2" />
@@ -376,9 +370,8 @@ export default function Sidebar() {
               </button>
               <button
                 onClick={toggleTheme}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md ${
-                  theme === "dark" ? "bg-gray-100 text-gray-900" : "text-gray-600"
-                }`}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md ${theme === "dark" ? "bg-gray-100 text-gray-900" : "text-gray-600"
+                  }`}
               >
                 <div className="flex items-center">
                   <Moon className="w-4 h-4 mr-2" />

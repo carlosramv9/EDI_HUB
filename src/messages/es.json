@@ -57,5 +57,40 @@
   "titles": {
     "testTitle": "Título de prueba",
     "testDescription": "Descripción de prueba"
-  }
+  },
+  "navigation": {
+    "dashboard": "Panel de Control",
+    "labels": {
+      "title": "Etiquetas",
+      "create": "Crear Etiqueta",
+      "list": "Lista de Etiquetas"
+    },
+    "sents": {
+      "title": "Envíos",
+      "asnGenerator": "Generador ASN"
+    },
+    "schedules": {
+      "title": "Programación",
+      "list": "Lista de Programación",
+      "create": "Crear Programación"
+    },
+    "settings": {
+      "title": "Configuración",
+      "profile": "Perfil",
+      "preferences": "Preferencias"
+    }
+  },
+  "scheduleTitle": "Programación de Envíos",
+  "orderNumber": "Orden #",
+  "partNumber": "Parte #",
+  "partName": "Nombre",
+  "shipDate": "Fecha",
+  "quantity": "Cantidad",
+  "shipTo": "Destino",
+  "edit": "Editar",
+  "printSkidManifest": "Imprimir Skid Manifest Label",
+  "printProductionParts": "Imprimir Production Parts Label",
+  "printPalletMaster": "Imprimir Pallet Master Label",
+  "printPackaging": "Imprimir Packaging Requirements",
+  "generateASN": "Generar ASN"
 }

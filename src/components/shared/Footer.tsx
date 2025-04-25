@@ -17,7 +17,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-white border-t">
+    <footer className="bg-white border-t mt-auto">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Copyright */}
         <div className="border-t border-gray-200 py-4">

@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             toast.success('Login successful!');
             setRefresh(true);
-            router.push('/test');
+            router.push('/schedules');
         } catch (error) {
             console.error('Login failed:', error);
             toast.error('Login failed. Please check your credentials and try again.');
