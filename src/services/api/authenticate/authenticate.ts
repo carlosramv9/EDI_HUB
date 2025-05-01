@@ -2,13 +2,13 @@ import { UserData } from "@/interfaces/auth/UserData";
 import { BaseService, BaseServiceResponse } from "../BaseService";
 import axiosInstance from '../axiosConfig';
 
-class AuthenticateApi extends BaseService<Record<string, unknown>> {
+class AuthenticateApi extends BaseService<Record<string, any>> {
     constructor() {
         super('Auth');
     }
 
     async login(username: string, password: string): Promise<string> {
-        const response = await axiosInstance.post<Record<string, unknown>>(
+        const response = await axiosInstance.post<Record<string, any>>(
             this.buildUrl('login'),
             { username, password }
         );
@@ -25,7 +25,7 @@ class AuthenticateApi extends BaseService<Record<string, unknown>> {
     }
 
     async refreshToken(): Promise<string> {
-        const response = await axiosInstance.post<Record<string, unknown>>(
+        const response = await axiosInstance.post<Record<string, any>>(
             this.buildUrl('refresh')
         );
 
@@ -41,7 +41,7 @@ class AuthenticateApi extends BaseService<Record<string, unknown>> {
     }
 
     async logout(): Promise<void> {
-        await axiosInstance.post(
+        await axiosInstance.delete(
             this.buildUrl('logout')
         );
         localStorage.removeItem('accessToken');

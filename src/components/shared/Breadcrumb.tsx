@@ -17,18 +17,19 @@ interface BreadcrumbProps {
 const Breadcrumb = ({ items = [], showHome = true }: BreadcrumbProps) => {
     const pathname = usePathname();
     const t = useTranslations();
+    const locales = ['es', 'en'];
 
     // Si no hay items, generamos el breadcrumb basado en el pathname
     const breadcrumbItems = items.length > 0 ? items : pathname
         .split('/')
-        .filter(item => item !== '' && item !== '[locale]')
+        .filter(item => item !== '' && item !== '[locale]' && !locales.includes(item))
         .map((item, index, array) => ({
             label: t(`navigation.${item}.title`, { default: item.charAt(0).toUpperCase() + item.slice(1) }),
             path: '/' + array.slice(0, index + 1).join('/')
         }));
 
     return (
-        <nav className="flex items-center space-x-2 py-4 px-4 bg-white rounded-lg shadow-sm">
+        <nav className="flex items-center space-x-2 py-4 px-4">
             {showHome && (
                 <>
                     <Link

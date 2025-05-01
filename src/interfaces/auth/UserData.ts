@@ -4,5 +4,6 @@ export interface UserData {
     secondName?: null;
     email?: string;
     username?: string;
-    role?: string;
+    roleName?: string;
+    roleId?: string;
 }

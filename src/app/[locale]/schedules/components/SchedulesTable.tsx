@@ -6,6 +6,7 @@ import { MoreVertical } from 'lucide-react';
 import { formatDate } from '@/helpers/dateHelper';
 import { useTranslations } from 'next-intl';
 import Breadcrumb from '@/components/shared/Breadcrumb';
+import { useConfiguration } from '@/providers/configuration/ConfigurationProvider';
 
 const SchedulesTable = () => {
     const { orders, getOrders } = useOrders();
@@ -13,9 +14,11 @@ const SchedulesTable = () => {
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const t = useTranslations();
+    const { setViewTitle } = useConfiguration();
 
     useEffect(() => {
         getOrders();
+        setViewTitle(t('scheduleTitle'));
     }, []);
 
     useEffect(() => {
@@ -46,7 +49,7 @@ const SchedulesTable = () => {
     return (
         <div className="overflow-x-auto rounded-lg px-5 mb-10">
             <Breadcrumb />
-            <h2 className='text-2xl font-bold m-3 mb-5'>{t('scheduleTitle')}</h2>
+            {/* <h2 className='text-2xl font-bold m-3 mb-5'>{t('scheduleTitle')}</h2> */}
             <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
                 <thead className="bg-gray-50">
                     <tr>

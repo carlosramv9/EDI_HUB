@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect, useRef, createRef, createContext, useContext } from "react"
 import Link from "next/link"
+import Image from 'next/image'
 import { usePathname } from "next/navigation"
 import { routes, Sitemap } from '@/data/sitemap';
 import {
@@ -20,7 +21,7 @@ import {
   MoreVertical,
 } from "lucide-react"
 import { useSidebar } from "@/context/SidebarContext"
-import Image from "next/image"
+import classNames from "classnames"
 
 interface NavItem {
   title: string;
@@ -173,7 +174,7 @@ export default function Sidebar() {
 
     return (
       <div
-        className="fixed left-16 bg-white rounded-md shadow-lg border border-gray-200 py-2 w-40"
+        className="fixed left-16 bg-[#F8F9FD] rounded-md shadow-lg border border-gray-200 py-2 w-40"
         style={{ top: typeof topPosition === 'number' ? `${topPosition}px` : 'auto' }}
       >
         {items.map((item) => (
@@ -224,8 +225,10 @@ export default function Sidebar() {
     <div className="relative">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-10 flex flex-col bg-[#f5f5f5] dark:bg-[#202025] border-r border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-64"
-          }`}
+        className={`fixed shadow-inner-right-md inset-y-0 left-0 z-10 flex flex-col bg-[#F8F9FD] dark:bg-[#202025] border-r 
+          border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-64"}
+          text-[0.5rem]
+          `}
       >
         {/* Logo */}
         <div className="flex items-center h-16 px-4 border-b border-gray-200">
@@ -233,7 +236,7 @@ export default function Sidebar() {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
                 <div className="relative w-8 h-8 rounded-full flex items-center justify-center">
-                  <Image src="/ai-hub.svg" alt="" className="w-6 h-6" width={24} height={24} />
+                  <Image src="globe.svg" alt="" className="w-6 h-6" width={24} height={24} />
                 </div>
                 <span className="ml-2 text-lg font-semibold">EDI Hub</span>
               </div>
@@ -266,7 +269,13 @@ export default function Sidebar() {
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto overflow-x-visible">
           {/* Main Navigation */}
-          <div className="px-3 py-4">
+          <div className={classNames(
+            "py-4 mt-5",
+            {
+              'px-3': collapsed,
+              'px-5': !collapsed
+            }
+          )}>
             {!collapsed && <div className="mb-2 text-xs font-semibold text-gray-500">MAIN</div>}
             {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">MAIN</div>} */}
             <nav className="space-y-1">
@@ -326,7 +335,13 @@ export default function Sidebar() {
           </div>
 
           {/* Settings Navigation */}
-          <div className="px-3 py-4 mt-5">
+          <div className={classNames(
+            "py-4 mt-5",
+            {
+              'px-3': collapsed,
+              'px-5': !collapsed
+            }
+          )}>
             {!collapsed && <div className="mb-2 text-xs font-semibold text-gray-500">SETTINGS</div>}
             {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">SETTINGS</div>} */}
             <nav className="space-y-1">
@@ -394,7 +409,7 @@ export default function Sidebar() {
 
         {/* Toggle Button */}
         <button
-          className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full p-1 shadow-md hidden lg:block"
+          className="absolute -right-3 top-5 bg-white border border-gray-200 rounded-full p-1 shadow-md hidden lg:block"
           onClick={() => setCollapsed(!collapsed)}
         >
           <ChevronRight className={`w-4 h-4 text-gray-600 transition-transform ${collapsed ? "" : "rotate-180"}`} />

@@ -17,6 +17,8 @@
   --background-end-rgb: 255, 255, 255;
   --max-width: 1100px;
   --border-radius: 12px;
+
+  --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,3 +30,9 @@
 }
 
 // Estilos adicionales específicos de la aplicación pueden ir aquí 
+
+.shadow-inner-right-md {
+  box-shadow: -10px -6px 53px -33px rgba(0, 0, 0, 0.33) inset;
+  -webkit-box-shadow: -10px -6px 53px -33px rgba(0, 0, 0, 0.33) inset;
+  -moz-box-shadow: -10px -6px 53px -33px rgba(0, 0, 0, 0.33) inset;
+}

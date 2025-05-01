@@ -79,7 +79,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     };
 
-    const logout = () => {
+    const logout = async () => {
+        await authenticateApi.logout();
         dispatch(setLogout());
     };
 

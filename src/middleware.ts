@@ -3,7 +3,6 @@ import createMiddleware from 'next-intl/middleware';
 import { locales } from './i18n/config';
 
 export default async function middleware(request: NextRequest) {
-    console.log('middleware');
     const defaultLocale = 'es';
     // Si estamos en la raíz, redirigir al locale por defecto
     if (request.nextUrl.pathname === '/') {
@@ -16,14 +15,6 @@ export default async function middleware(request: NextRequest) {
         localePrefix: 'as-needed',
         localeDetection: false,
         pathnames: {
-            '/dashboard': {
-                es: '/panel',
-                en: '/dashboard',
-            },
-            '/about': {
-                es: '/sobre-nosotros',
-                en: '/about',
-            },
         },
     });
     const response = handleI18nRouting(request);

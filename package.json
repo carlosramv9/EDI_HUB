@@ -16,6 +16,7 @@
     "@geist-ui/core": "^2.3.8",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^0.30.0",
+    "classnames": "^2.5.1",
     "config": "^3.3.6",
     "cookies-next": "^4.3.0",
     "cross-env": "^7.0.3",

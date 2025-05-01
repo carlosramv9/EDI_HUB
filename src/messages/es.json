@@ -92,5 +92,8 @@
   "printProductionParts": "Imprimir Production Parts Label",
   "printPalletMaster": "Imprimir Pallet Master Label",
   "printPackaging": "Imprimir Packaging Requirements",
-  "generateASN": "Generar ASN"
+  "generateASN": "Generar ASN",
+  "logout": "Cerrar sesión",
+  "profile": "Perfil",
+  "settings": "Configuración"
 }
