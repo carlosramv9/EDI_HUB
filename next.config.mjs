@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
     reactStrictMode: true,
     output: 'standalone',
-    basePath: '/edihub', // Ajusta esto al nombre de tu subaplicación en IIS
+    basePath: process.env.NODE_ENV === 'development' ? '' : '/edihub', // Ajusta esto al nombre de tu subaplicación en IIS
     images: {
         domains: ['localhost'],
     },

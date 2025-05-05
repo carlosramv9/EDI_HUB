@@ -10,9 +10,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        backgrounddark: "#121212",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {

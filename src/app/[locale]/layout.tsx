@@ -5,10 +5,11 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReduxProvider } from '@/providers/ReduxProvider';
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from '../../providers/Authenticate/AuthProvider';
+import { AuthProvider, useAuth } from '../../providers/Authenticate/AuthProvider';
 import '@/services/api/axiosConfig';
 import { Metadata } from 'next';
 import { Providers } from '../providers';
+import Loader from '@/components/ui/Loader';
 
 export const metadata: Metadata = {
   title: {

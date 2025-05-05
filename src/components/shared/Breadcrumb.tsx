@@ -29,7 +29,7 @@ const Breadcrumb = ({ items = [], showHome = true }: BreadcrumbProps) => {
         }));
 
     return (
-        <nav className="flex items-center space-x-2 py-4 px-4">
+        <nav className="flex items-center space-x-2 py-4 px-4 ml-auto">
             {showHome && (
                 <>
                     <Link

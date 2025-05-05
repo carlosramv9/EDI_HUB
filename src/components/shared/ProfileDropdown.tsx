@@ -39,7 +39,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+        className={classNames(
+          "flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors",
+          "dark:text-white dark:hover:bg-gray-800"
+        )}
       >
         <UserCircle className="w-6 h-6" />
         <div className='ml-2'>

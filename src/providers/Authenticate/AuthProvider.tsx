@@ -9,6 +9,8 @@ import { useForm, UseFormRegister } from "react-hook-form";
 import { UserData } from '@/interfaces/auth/UserData';
 
 interface AuthContextType {
+    loadingAuth: boolean;
+    setLoadingAuth: (loading: boolean) => void;
     refresh: boolean;
     setRefresh: (refresh: boolean) => void;
     authenticate: () => Promise<void>;
@@ -28,6 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const dispatch = useAppDispatch();
     const [refresh, setRefresh] = useState(false);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const [loadingAuth, setLoadingAuth] = useState(true);
 
     useEffect(() => {
         const auth = async () => await authenticate();
@@ -45,6 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             dispatch(setError({ error }));
             console.log(error);
         }
+        setLoadingAuth(false);
     };
 
     const refreshToken = async () => {
@@ -85,6 +89,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const paramsProvider = {
+        loadingAuth,
+        setLoadingAuth,
         refresh,
         setRefresh,
         login,

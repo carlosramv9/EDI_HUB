@@ -12,7 +12,8 @@ const Header = () => {
   const { viewTitle } = useConfiguration();
   return (
     <header className={classNames(
-      `bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between min-h-14`
+      `bg-background dark:bg-backgrounddark border-b border-gray-200 dark:border-gray-800 px-4 py-2 flex items-center justify-between min-h-14`,
+      "dark:border-gray-800 dark:text-white"
     )}>
       <div className="ml-2 flex items-center gap-4">
         <FontAwesomeIcon icon={faTableColumns} className="text-gray-500" />

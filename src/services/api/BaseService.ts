@@ -9,15 +9,15 @@ export type BaseServiceParams = {
 }
 
 export type BaseServiceIdParams = BaseServiceParams & {
-    id: string | number;
+    id?: string | number;
 }
 
-export type BaseServiceData<T> = BaseServiceParams & {
-    data: T;
+export type BaseServiceData = BaseServiceParams & {
+    data: any;
 }
 
-export type BaseServiceResponse<T> = {
-    data: T;
+export type BaseServiceResponse = {
+    data: any;
     status: number;
 }
 
@@ -66,25 +66,33 @@ export class BaseService<T> {
         return response.data;
     }
 
-    async getById({ endpoint = '', id }: BaseServiceIdParams): Promise<BaseServiceResponse<T>> {
+    async get<T>({ endpoint = '' }: BaseServiceParams): Promise<T> {
+        const response = await axiosInstance.get<T>(this.buildUrl(endpoint));
+        if (response.status !== 200) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        return response.data;
+    }
+
+    async getById({ endpoint = '', id }: BaseServiceIdParams): Promise<T> {
         const url = this.buildUrl(endpoint, id);
-        const response = await axiosInstance.get<BaseServiceResponse<T>>(url);
+        const response = await axiosInstance.get<T>(url);
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async post({ endpoint = '', data }: BaseServiceData<T>): Promise<BaseServiceResponseMessage> {
-        const response = await axiosInstance.post<BaseServiceResponseMessage>(this.buildUrl(endpoint), data);
+    async post<T>({ endpoint = '', data }: BaseServiceData): Promise<T> {
+        const response = await axiosInstance.post<T>(this.buildUrl(endpoint), data);
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async update({ id, endpoint = '', data }: BaseServiceIdParams & BaseServiceData<T>): Promise<BaseServiceResponseMessage> {
-        const response = await axiosInstance.put<BaseServiceResponseMessage>(this.buildUrl(endpoint, id), data);
+    async update<T>({ id = '', endpoint = '', data }: BaseServiceIdParams & BaseServiceData): Promise<T> {
+        const response = await axiosInstance.put<T>(this.buildUrl(endpoint, id), data);
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }

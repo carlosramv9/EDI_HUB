@@ -95,5 +95,7 @@
   "generateASN": "Generate ASN",
   "logout": "Logout",
   "profile": "Profile",
-  "settings": "Settings"
+  "settings": "Settings",
+  "orderType": "Order Type",
+  "asnNumber": "ASN Number"
 }

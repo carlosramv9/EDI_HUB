@@ -226,19 +226,19 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`fixed shadow-inner-right-md inset-y-0 left-0 z-10 flex flex-col bg-[#F8F9FD] dark:bg-[#202025] border-r 
-          border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-64"}
+          border-gray-200 dark:border-gray-800 transition-all duration-300 ${collapsed ? "w-16" : "w-64"}
           text-[0.5rem]
           `}
       >
         {/* Logo */}
-        <div className="flex items-center h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-800">
           {!collapsed ? (
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
                 <div className="relative w-8 h-8 rounded-full flex items-center justify-center">
                   <Image src="globe.svg" alt="" className="w-6 h-6" width={24} height={24} />
                 </div>
-                <span className="ml-2 text-lg font-semibold">EDI Hub</span>
+                <span className="ml-2 text-lg font-semibold dark:text-white">EDI Hub</span>
               </div>
               <button onClick={() => setCollapsed(true)}>
                 <MoreVertical className="w-5 h-5 text-gray-500" />
@@ -285,16 +285,16 @@ export default function Sidebar() {
                   <div
                     ref={!item.submenu ? divRefs.current[item.title] : null}
                     className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${isActive(item.href)
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
                       }`}
                     onClick={() => (item.submenu && !collapsed ? toggleSubmenu(item.title) : null)}
                     data-item={item.title}
                   >
-                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500`} />
+                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500 dark:text-white`} />
                     {!collapsed && (
                       <>
-                        <span className="flex-1">{item.title}</span>
+                        <span className="flex-1 dark:text-white">{item.title}</span>
                         {item.submenu && (
                           <button onClick={(e) => toggleSubmenu(item.title)} className="focus:outline-none">
                             {openSubmenu === item.title ? (
@@ -351,12 +351,12 @@ export default function Sidebar() {
                     ref={linkRefs.current[item.title]}
                     href={item.href}
                     className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive(item.href)
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
                       }`}
                   >
-                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500`} />
-                    {!collapsed && <span>{item.title}</span>}
+                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500 dark:text-white`} />
+                    {!collapsed && <span className="dark:text-white">{item.title}</span>}
 
                     {/* Tooltip for collapsed mode */}
                     {collapsed && (
@@ -370,7 +370,7 @@ export default function Sidebar() {
         </div>
 
         {/* Theme Toggle */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
           {!collapsed ? (
             <div className="flex items-center justify-between">
               <button
