@@ -6,9 +6,10 @@ import { SearchModel } from "@/interfaces/searchModel/SearchModels";
 import { BaseServiceResponse, BaseServiceResponseArray } from "@/services/api/BaseService";
 import ordersApi from "@/services/api/orders/orders";
 import { getOrders, getOrdersFailure, getOrdersSuccess, getOrderSuccess } from "@/store/features/orders/orderSlice";
-import { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import { FieldErrors, Control, FieldValues, UseFormHandleSubmit, useForm, UseFormSetValue } from "react-hook-form";
 import { UseFormRegister } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface OrdersProviderProps {
     children: React.ReactNode;
@@ -16,6 +17,8 @@ interface OrdersProviderProps {
 
 interface OrdersProps<T> {
     orders: IOrder[];
+    files: File[];
+    setFiles: (files: File[]) => void;
     register: UseFormRegister<IOrder>;
     setValue: UseFormSetValue<IOrder>;
     control: Control<IOrder>;
@@ -27,6 +30,9 @@ interface OrdersProps<T> {
     getOrderById: (id: string) => Promise<void>;
     createOrder: (order: IOrder) => Promise<void>;
     updateOrder: (order: IOrder) => Promise<void>;
+    openMenuId: number | null;
+    setOpenMenuId: (id: number | null) => void;
+    uploadFiles: (files: File[]) => Promise<void>;
 }
 
 const OrdersContext = createContext<OrdersProps<IOrder>>({
@@ -41,7 +47,12 @@ const OrdersContext = createContext<OrdersProps<IOrder>>({
     errors: {} as FieldErrors<IOrder>,
     searchModel: {} as SearchModel,
     setSearchModel: () => { },
+    files: [] as File[],
+    setFiles: () => { },
     handleSubmit: {} as UseFormHandleSubmit<IOrder>,
+    openMenuId: null,
+    setOpenMenuId: () => { },
+    uploadFiles: (files: File[]) => Promise.resolve()
 });
 
 export const useOrders = () => {
@@ -54,6 +65,8 @@ export const useOrders = () => {
 
 const OrdersProvider = ({ children }: OrdersProviderProps) => {
     const [orders, setOrders] = useState<IOrder[]>([]);
+    const [files, setFiles] = useState<File[]>([]);
+    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const dispatch = useAppDispatch();
     const [searchModel, setSearchModel] = useState<SearchModel>({
         id: '',
@@ -82,8 +95,8 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
     const getOrdersList = async () => {
         dispatch(getOrders());
         try {
-            const orders = await ordersApi.getAll({ endpoint: 'all' });
-            dispatch(getOrdersSuccess({ data: orders.data, total: orders.pageSize }));
+            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: searchModel });
+            dispatch(getOrdersSuccess({ data: orders.data, total: orders.total }));
         } catch (error) {
             dispatch(getOrdersFailure(error));
             throw error;
@@ -125,6 +138,21 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         }
     }
 
+    const uploadFiles = async (files: File[]) => {
+        dispatch(getOrders());
+        try {
+            await ordersApi.UploadSchedules(files);
+
+            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: searchModel });
+            dispatch(getOrdersSuccess({ data: orders.data, total: orders.total }));
+
+            toast.success('Schedules uploaded successfully');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to upload schedules');
+        }
+    }
+
     const options = useMemo(() => ({
         register,
         setValue,
@@ -137,9 +165,14 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         getOrderById,
         createOrder,
         updateOrder,
+        openMenuId,
+        setOpenMenuId,
         searchModel,
-        setSearchModel
-    }), [register, control, errors, handleSubmit, orders, setOrders, getOrdersList, getOrderById, createOrder, updateOrder, searchModel, setSearchModel])
+        setSearchModel,
+        files,
+        setFiles,
+        uploadFiles
+    }), [register, control, errors, handleSubmit, orders, setOrders, getOrdersList, getOrderById, createOrder, updateOrder, searchModel, setSearchModel, files, setFiles, uploadFiles])
 
     return <OrdersContext.Provider value={options}>
         {children}

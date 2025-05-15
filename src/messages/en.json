@@ -97,5 +97,9 @@
   "profile": "Profile",
   "settings": "Settings",
   "orderType": "Order Type",
-  "asnNumber": "ASN Number"
+  "asnNumber": "ASN Number",
+  "showing": "Showing",
+  "of": "of",
+  "previous": "Previous",
+  "next": "Next"
 }

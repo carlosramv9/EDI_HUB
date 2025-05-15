@@ -22,7 +22,7 @@ export type BaseServiceResponse = {
 }
 
 export type BaseServiceResponseArray<T> = {
-    totalCount: number;
+    total: number;
     page: number;
     pageSize: number;
     totalPages: number;
@@ -58,49 +58,49 @@ export class BaseService<T> {
         return parts.join('/');
     }
 
-    async getAll({ endpoint = '' }: BaseServiceParams): Promise<BaseServiceResponseArray<T>> {
-        const response = await axiosInstance.get<BaseServiceResponseArray<T>>(this.buildUrl(endpoint));
+    async getAll({ endpoint = '', headers }: BaseServiceParams): Promise<BaseServiceResponseArray<T>> {
+        const response = await axiosInstance.get<BaseServiceResponseArray<T>>(this.buildUrl(endpoint), { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async get<T>({ endpoint = '' }: BaseServiceParams): Promise<T> {
-        const response = await axiosInstance.get<T>(this.buildUrl(endpoint));
+    async get<T>({ endpoint = '', headers }: BaseServiceParams): Promise<T> {
+        const response = await axiosInstance.get<T>(this.buildUrl(endpoint), { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async getById({ endpoint = '', id }: BaseServiceIdParams): Promise<T> {
+    async getById({ endpoint = '', id, headers }: BaseServiceIdParams): Promise<T> {
         const url = this.buildUrl(endpoint, id);
-        const response = await axiosInstance.get<T>(url);
+        const response = await axiosInstance.get<T>(url, { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async post<T>({ endpoint = '', data }: BaseServiceData): Promise<T> {
-        const response = await axiosInstance.post<T>(this.buildUrl(endpoint), data);
+    async post<T>({ endpoint = '', data, headers }: BaseServiceData): Promise<T> {
+        const response = await axiosInstance.post<T>(this.buildUrl(endpoint), data, { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async update<T>({ id = '', endpoint = '', data }: BaseServiceIdParams & BaseServiceData): Promise<T> {
-        const response = await axiosInstance.put<T>(this.buildUrl(endpoint, id), data);
+    async update<T>({ id = '', endpoint = '', data, headers }: BaseServiceIdParams & BaseServiceData): Promise<T> {
+        const response = await axiosInstance.put<T>(this.buildUrl(endpoint, id), data, { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
         return response.data;
     }
 
-    async delete({ id, endpoint = '' }: BaseServiceIdParams): Promise<BaseServiceResponseMessage> {
-        const response = await axiosInstance.delete<BaseServiceResponseMessage>(this.buildUrl(endpoint, id));
+    async delete({ id, endpoint = '', headers }: BaseServiceIdParams): Promise<BaseServiceResponseMessage> {
+        const response = await axiosInstance.delete<BaseServiceResponseMessage>(this.buildUrl(endpoint, id), { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }

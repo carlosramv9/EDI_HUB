@@ -1,1 +1,1 @@
-export { default } from './ProductionPartsForm'
+export { default } from './ProductionPartsView'

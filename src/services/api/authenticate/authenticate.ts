@@ -47,8 +47,8 @@ class AuthenticateApi extends BaseService<Record<string, any>> {
         localStorage.removeItem('accessToken');
     }
 
-    async getDataUser(): Promise<BaseServiceResponse<UserData>> {
-        return await this.getById({ id: '' });
+    async getDataUser(): Promise<BaseServiceResponse> {
+        return await this.getById({ id: '' }) as BaseServiceResponse;
     }
 }
 

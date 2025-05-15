@@ -97,5 +97,9 @@
   "profile": "Perfil",
   "settings": "Configuración",
   "orderType": "Tipo de Orden",
-  "asnNumber": "Número de ASN"
+  "asnNumber": "Número de ASN",
+  "showing": "Mostrando",
+  "of": "de",
+  "previous": "Anterior",
+  "next": "Siguiente"
 }
