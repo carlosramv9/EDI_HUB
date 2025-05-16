@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
     const t = useTranslations();
     const router = useRouter();
-    const { setOpenMenuId, openMenuId } = useOrders();
+    const { setOpenMenuId, openMenuId, downloadASNFile } = useOrders();
 
     const handleAction = useCallback((action: string, id: number) => {
         switch (action) {
@@ -27,7 +27,7 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
                 router.push(`/schedules/${id}/packaging-requirements`);
                 break;
             case 'generate-asn':
-                router.push(`/schedules/${id}/generate-asn`);
+                downloadASNFile();
                 break;
             case 'manifest':
                 router.push(`/schedules/${id}/manifest`);

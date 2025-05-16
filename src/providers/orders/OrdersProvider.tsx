@@ -6,6 +6,7 @@ import { SearchModel } from "@/interfaces/searchModel/SearchModels";
 import { BaseServiceResponse, BaseServiceResponseArray } from "@/services/api/BaseService";
 import ordersApi from "@/services/api/orders/orders";
 import { getOrders, getOrdersFailure, getOrdersSuccess, getOrderSuccess } from "@/store/features/orders/orderSlice";
+import dayjs from "dayjs";
 import React, { createContext, useContext, useMemo, useState } from "react";
 import { FieldErrors, Control, FieldValues, UseFormHandleSubmit, useForm, UseFormSetValue } from "react-hook-form";
 import { UseFormRegister } from "react-hook-form";
@@ -30,6 +31,7 @@ interface OrdersProps<T> {
     getOrderById: (id: string) => Promise<void>;
     createOrder: (order: IOrder) => Promise<void>;
     updateOrder: (order: IOrder) => Promise<void>;
+    downloadASNFile: () => Promise<void>;
     openMenuId: number | null;
     setOpenMenuId: (id: number | null) => void;
     uploadFiles: (files: File[]) => Promise<void>;
@@ -41,6 +43,7 @@ const OrdersContext = createContext<OrdersProps<IOrder>>({
     getOrderById: () => Promise.resolve(),
     createOrder: () => Promise.resolve(),
     updateOrder: () => Promise.resolve(),
+    downloadASNFile: () => Promise.resolve(),
     register: {} as UseFormRegister<IOrder>,
     setValue: {} as UseFormSetValue<IOrder>,
     control: {} as Control<IOrder>,
@@ -153,12 +156,29 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         }
     }
 
+    const downloadASNFile = async () => {
+        try {
+            const response = await ordersApi.downloadASN();
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `ASN_${dayjs().format('YYMMDDHHmmss')}.edi`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to download ASN file');
+        }
+    }
+
     const options = useMemo(() => ({
         register,
         setValue,
         control,
         errors,
         handleSubmit,
+        downloadASNFile,
         orders,
         setOrders,
         getOrdersList,

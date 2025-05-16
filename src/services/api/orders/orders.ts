@@ -20,6 +20,10 @@ class OrdersApi extends BaseService<IOrder> {
             },
         });
     }
+
+    async downloadASN() {
+        return axiosInstance.get(this.buildUrl('generate/asn'), { responseType: 'blob' });
+    }
 }
 
 export const ordersApi = new OrdersApi();
