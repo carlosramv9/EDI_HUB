@@ -23,11 +23,14 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
             case 'pallet-master':
                 router.push(`/schedules/${id}/pallet-master`);
                 break;
-            case 'packaging':
-                router.push(`/schedules/${id}/packaging`);
+            case 'packaging-requirements':
+                router.push(`/schedules/${id}/packaging-requirements`);
                 break;
             case 'generate-asn':
                 router.push(`/schedules/${id}/generate-asn`);
+                break;
+            case 'manifest':
+                router.push(`/schedules/${id}/manifest`);
                 break;
             default:
                 break;
@@ -54,18 +57,24 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
                     className="absolute left-5 mt-2 rounded-md shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-10"
                 >
                     <div className="py-1 flex flex-col" role="menu">
-                        <button
+                        {/* <button
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
                             onClick={() => handleAction('edit', order.id!)}
                         >
                             {t('edit')}
-                        </button>
+                        </button> */}
                         <button
+                            className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                            onClick={() => handleAction('manifest', order.id!)}
+                        >
+                            {t('printManifest')}
+                        </button>
+                        {/* <button
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
                             onClick={() => handleAction('skid-manifest', order.id!)}
                         >
                             {t('printSkidManifest')}
-                        </button>
+                        </button> */}
                         <button
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
                             onClick={() => handleAction('production-parts', order.id!)}
@@ -80,13 +89,13 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
                         </button>
                         <button
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
-                            onClick={() => handleAction('packaging', order.id!)}
+                            onClick={() => handleAction('packaging-requirements', order.id!)}
                         >
                             {t('printPackaging')}
                         </button>
                         <button
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
-                            onClick={() => handleAction('packaging', order.id!)}
+                            onClick={() => handleAction('generate-asn', order.id!)}
                         >
                             {t('generateASN')}
                         </button>

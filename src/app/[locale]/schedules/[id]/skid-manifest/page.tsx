@@ -1,1 +1,1 @@
-export { default } from './SkidManifestForm'
+export { default } from './SkidManifestView'

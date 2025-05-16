@@ -38,21 +38,21 @@ const mainNavItems: NavItem[] = [
     href: "/dashboard",
     icon: LayoutDashboard,
   },
-  {
-    title: "Labels",
-    href: "/labels",
-    icon: Users,
-    submenu: true,
-    submenuItems: [
-      { title: "All Labels", href: "/labels" },
-      { title: "Create Label", href: "/labels/create" }
-    ]
-  },
-  {
-    title: "Sents",
-    href: "/sents",
-    icon: FileText,
-  },
+  // {
+  //   title: "Labels",
+  //   href: "/labels",
+  //   icon: Users,
+  //   submenu: true,
+  //   submenuItems: [
+  //     { title: "All Labels", href: "/labels" },
+  //     { title: "Create Label", href: "/labels/create" }
+  //   ]
+  // },
+  // {
+  //   title: "Sents",
+  //   href: "/sents",
+  //   icon: FileText,
+  // },
   {
     title: "Schedules",
     href: "/schedules",
@@ -60,7 +60,7 @@ const mainNavItems: NavItem[] = [
     submenu: true,
     submenuItems: [
       { title: "View Schedule", href: "/schedules" },
-      { title: "Create Schedule", href: "/schedules/create" }
+      // { title: "Create Schedule", href: "/schedules/create" }
     ]
   },
 ]
@@ -94,9 +94,9 @@ export default function Sidebar() {
     mainNavItems.forEach(item => {
       divRefs.current[item.title] = divRefs.current[item.title] || createRef();
     });
-    settingsNavItems.forEach(item => {
-      linkRefs.current[item.title] = linkRefs.current[item.title] || createRef();
-    });
+    // settingsNavItems.forEach(item => {
+    //   linkRefs.current[item.title] = linkRefs.current[item.title] || createRef();
+    // });
   }, []);
 
   // Check if we're on mobile and set collapsed state accordingly
@@ -342,9 +342,9 @@ export default function Sidebar() {
               'px-5': !collapsed
             }
           )}>
-            {!collapsed && <div className="mb-2 text-xs font-semibold text-gray-500">SETTINGS</div>}
+            {/* {!collapsed && <div className="mb-2 text-xs font-semibold text-gray-500">SETTINGS</div>} */}
             {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">SETTINGS</div>} */}
-            <nav className="space-y-1">
+            {/* <nav className="space-y-1">
               {settingsNavItems.map((item) => (
                 <div key={item.title} className="relative group">
                   <Link
@@ -356,21 +356,21 @@ export default function Sidebar() {
                       }`}
                   >
                     <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500 dark:text-white`} />
-                    {!collapsed && <span className="dark:text-white">{item.title}</span>}
+                    {!collapsed && <span className="dark:text-white">{item.title}</span>} */}
 
                     {/* Tooltip for collapsed mode */}
-                    {collapsed && (
+                    {/* {collapsed && (
                       <Tooltip title={item.title} parentRef={linkRefs.current[item.title]!} />
                     )}
                   </Link>
                 </div>
               ))}
-            </nav>
+            </nav> */}
           </div>
         </div>
 
         {/* Theme Toggle */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+        {/* <div className="p-4 border-t border-gray-200 dark:border-gray-800">
           {!collapsed ? (
             <div className="flex items-center justify-between">
               <button
@@ -405,7 +405,7 @@ export default function Sidebar() {
               </button>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Toggle Button */}
         <button

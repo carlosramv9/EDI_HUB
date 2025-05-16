@@ -101,5 +101,6 @@
   "showing": "Showing",
   "of": "of",
   "previous": "Previous",
-  "next": "Next"
+  "next": "Next",
+  "printManifest": "Print Manifest Label"
 }
