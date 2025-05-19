@@ -12,6 +12,7 @@ import { useAuth } from '@/providers/Authenticate/AuthProvider'
 import { useRouter } from '@/navigation'
 import Head from 'next/head'
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 export const metadata: Metadata = {
   title: "Log In "
 };
@@ -97,4 +98,4 @@ const Login = () => {
     </div>
   </>)
 }
-export default Login
+export default Login;

@@ -27,7 +27,8 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
                 router.push(`/schedules/${id}/packaging-requirements`);
                 break;
             case 'generate-asn':
-                downloadASNFile();
+                // downloadASNFile();
+                router.push(`/schedules/${id}/generate`);
                 break;
             case 'manifest':
                 router.push(`/schedules/${id}/manifest`);
