@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, useMemo, useState } from 'react'
+'use client'
+import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react'
 
 export interface TableContextProps {
     page: number;
@@ -29,9 +30,28 @@ const TableContext = React.createContext<TableContextProps>({
     setTotalPages: () => { }
 });
 
-const TableProvider = ({ children, ...props }: PropsWithChildren<TableContextProps>) => {
+const TableProvider = ({ children }: { children: React.ReactNode }) => {
+
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState<number>(10);
+    const [total, setTotal] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
+
+    const values = useMemo(() => {
+        return {
+            page,
+            setPage,
+            pageSize,
+            setPageSize,
+            total,
+            setTotal,
+            totalPages,
+            setTotalPages
+        };
+    }, [page, setPage, pageSize, setPageSize, total, setTotal, totalPages, setTotalPages]);
+
     return (
-        <TableContext.Provider value={props}>
+        <TableContext.Provider value={values}>
             {children}
         </TableContext.Provider>
     )
@@ -45,13 +65,13 @@ export const useTableContext = () => {
     return context;
 };
 
-export const useTable = ({ data, pageSize: _pageSize, total: _total, totalPages: _totalPages }: TableProps) => {
+export const useTable = ({ data, pageSize: _pageSize, total: _total, totalPages: _totalPages }: TableProps): TableContextProps => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState<number>(_pageSize);
     const [total, setTotal] = useState<number>(_total);
     const [totalPages, setTotalPages] = useState<number>(_totalPages);
 
-    const values = useMemo(() => {
+    const values: TableContextProps = useMemo(() => {
         return {
             page,
             setPage,

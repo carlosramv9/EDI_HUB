@@ -1,4 +1,4 @@
-export type SearchModel = {
+export interface SearchModel {
     id: string;
     orderColumn: string;
     orderDirection: string;
@@ -8,4 +8,8 @@ export type SearchModel = {
 
 export interface SMUsers extends SearchModel {
     userName: string;
+}
+
+export interface SMOrders extends SearchModel {
+    search: string;
 }

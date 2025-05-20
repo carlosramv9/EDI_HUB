@@ -2,7 +2,7 @@
 
 import { useAppDispatch } from "@/app/store";
 import { IOrder } from "@/interfaces/orders/IOrder";
-import { SearchModel } from "@/interfaces/searchModel/SearchModels";
+import { SearchModel, SMOrders } from "@/interfaces/searchModel/SearchModels";
 import { BaseServiceResponse, BaseServiceResponseArray } from "@/services/api/BaseService";
 import ordersApi from "@/services/api/orders/orders";
 import { getOrders, getOrdersFailure, getOrdersSuccess, getOrderSuccess } from "@/store/features/orders/orderSlice";
@@ -24,8 +24,8 @@ interface OrdersProps<T> {
     setValue: UseFormSetValue<IOrder>;
     control: Control<IOrder>;
     errors: FieldErrors<IOrder>;
-    searchModel: SearchModel;
-    setSearchModel: (searchModel: SearchModel) => void;
+    searchModel: SMOrders;
+    setSearchModel: (searchModel: SMOrders) => void;
     handleSubmit: UseFormHandleSubmit<IOrder>;
     getOrdersList: () => Promise<void>;
     getOrderById: (id: string) => Promise<void>;
@@ -48,7 +48,7 @@ const OrdersContext = createContext<OrdersProps<IOrder>>({
     setValue: {} as UseFormSetValue<IOrder>,
     control: {} as Control<IOrder>,
     errors: {} as FieldErrors<IOrder>,
-    searchModel: {} as SearchModel,
+    searchModel: {} as SMOrders,
     setSearchModel: () => { },
     files: [] as File[],
     setFiles: () => { },
@@ -71,12 +71,13 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
     const [files, setFiles] = useState<File[]>([]);
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const dispatch = useAppDispatch();
-    const [searchModel, setSearchModel] = useState<SearchModel>({
+    const [searchModel, setSearchModel] = useState<SMOrders>({
         id: '',
         orderColumn: 'id',
         orderDirection: 'desc',
         page: 1,
         pageSize: 10,
+        search: ''
     });
 
     const { register, control, formState: { errors }, handleSubmit, setValue } = useForm<IOrder>({
