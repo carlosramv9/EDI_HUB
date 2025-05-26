@@ -79,7 +79,7 @@ const PackagingRequirementProvider = ({ children }: PackagingRequirementProvider
 
     const dowloadLabel = async (data: ProductionPartLabel) => {
         try {
-            //await createMasterPallet(data);
+            await createMasterPallet(data);
             const response = await apiSubaru.downloadLabel({
                 endpoint: 'PackagingRequirementLabel', data
             });

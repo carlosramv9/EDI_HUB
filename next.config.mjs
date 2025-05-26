@@ -11,8 +11,9 @@ const nextConfig = {
         domains: ['localhost'],
     },
     env: {
-        development: "https://localhost:7205/api",
-        production: "/api", // Esto se ajustará según tu configuración de proxy en IIS
+        // development: "https://localhost:7205/api",
+        development: "https://yarzadigital.mx/apiedi/api",
+        production: "https://yarzadigital.mx/apiedi/api", // Esto se ajustará según tu configuración de proxy en IIS
         HEADER_TOKEN: "xtoken"
     },
     webpack: (config, { isServer }) => {

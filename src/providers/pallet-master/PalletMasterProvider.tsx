@@ -77,7 +77,7 @@ const PalletMasterProvider = ({ children }: PalletMasterProviderProps) => {
 
     const dowloadLabel = async (data: PalletMasterLabel) => {
         try {
-            //await createMasterPallet(data);
+            await createMasterPallet(data);
             const response = await apiSubaru.downloadLabel({
                 endpoint: 'PalletMasterLabel', data
             });

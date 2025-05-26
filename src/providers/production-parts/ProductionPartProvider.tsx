@@ -77,7 +77,7 @@ const ProductionPartProvider = ({ children }: ProductionPartProviderProps) => {
 
     const dowloadLabel = async (data: ProductionPartLabel) => {
         try {
-            //await createMasterPallet(data);
+            await createMasterPallet(data);
             const response = await apiSubaru.downloadLabel({
                 endpoint: 'ProductionPartLabel', data
             });

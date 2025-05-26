@@ -101,15 +101,15 @@ export default function Sidebar() {
 
   // Check if we're on mobile and set collapsed state accordingly
   useEffect(() => {
-    const handleResize = () => {
-      setCollapsed(window.innerWidth < 1024)
-    }
+    // const handleResize = () => {
+    //   setCollapsed(window.innerWidth < 1024)
+    // }
 
-    // Set initial state
-    handleResize()
+    // // Set initial state
+    // handleResize()
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+    // window.addEventListener("resize", handleResize)
+    // return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   // Toggle submenu
@@ -154,7 +154,7 @@ export default function Sidebar() {
           <Link
             key={item.title}
             href={item.href}
-            className={`block py-2 text-sm ${isActive(item.href) ? "text-gray-900 font-medium" : "text-gray-600 hover:text-gray-900"
+            className={`block py-2 text-sm ${isActive(item.href) ? "text-white font-medium" : "text-gray-600 hover:text-white"
               }`}
           >
             {item.title}
@@ -174,7 +174,7 @@ export default function Sidebar() {
 
     return (
       <div
-        className="fixed left-16 bg-[#F8F9FD] rounded-md shadow-lg border border-gray-200 py-2 w-40"
+        className="fixed left-16 bg-[#a5b7ff] rounded-md shadow-lg border border-gray-200 py-2 w-40"
         style={{ top: typeof topPosition === 'number' ? `${topPosition}px` : 'auto' }}
       >
         {items.map((item) => (
@@ -225,8 +225,8 @@ export default function Sidebar() {
     <div className="relative">
       {/* Sidebar */}
       <aside
-        className={`fixed shadow-inner-right-md inset-y-0 left-0 z-10 flex flex-col bg-[#F8F9FD] dark:bg-[#202025] border-r 
-          border-gray-200 dark:border-gray-800 transition-all duration-300 ${collapsed ? "w-16" : "w-64"}
+        className={`fixed shadow-inner-right-md inset-y-0 left-0 z-10 flex flex-col bg-[#222D32] dark:bg-[#202025] border-r 
+          border-[#2a383e] dark:border-gray-800 transition-all duration-300 ${collapsed ? "w-16" : "w-64"}
           text-[0.5rem]
           `}
       >
@@ -236,9 +236,9 @@ export default function Sidebar() {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
                 <div className="relative w-8 h-8 rounded-full flex items-center justify-center">
-                  <Image src="globe.svg" alt="" className="w-6 h-6" width={24} height={24} />
+                  <img src="/globe.svg" alt="" className="w-6 h-6 text-white invert" />
                 </div>
-                <span className="ml-2 text-lg font-semibold dark:text-white">EDI Hub</span>
+                <span className="ml-2 text-lg font-semibold text-white">EDI HUB</span>
               </div>
               <button onClick={() => setCollapsed(true)}>
                 <MoreVertical className="w-5 h-5 text-gray-500" />
@@ -246,22 +246,7 @@ export default function Sidebar() {
             </div>
           ) : (
             <div className="flex items-center justify-center w-full">
-              <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
-              </div>
+              <img src="/globe.svg" width={16} height={16} className="w-6 h-6 text-white invert" />
             </div>
           )}
         </div>
@@ -276,7 +261,7 @@ export default function Sidebar() {
               'px-5': !collapsed
             }
           )}>
-            {!collapsed && <div className="mb-2 text-xs font-semibold text-gray-500">MAIN</div>}
+            {!collapsed && <div className="mb-2 text-xs font-semibold text-white">MAIN</div>}
             {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">MAIN</div>} */}
             <nav className="space-y-1">
               {mainNavItems.map((item) => (
@@ -285,13 +270,13 @@ export default function Sidebar() {
                   <div
                     ref={!item.submenu ? divRefs.current[item.title] : null}
                     className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${isActive(item.href)
-                      ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
+                      ? "bg-[#1E282C] dark:bg-gray-800 text-white"
+                      : "text-white hover:bg-gray-800 hover:text-white"
                       }`}
                     onClick={() => (item.submenu && !collapsed ? toggleSubmenu(item.title) : null)}
                     data-item={item.title}
                   >
-                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500 dark:text-white`} />
+                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-white`} />
                     {!collapsed && (
                       <>
                         <span className="flex-1 dark:text-white">{item.title}</span>
@@ -358,8 +343,8 @@ export default function Sidebar() {
                     <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500 dark:text-white`} />
                     {!collapsed && <span className="dark:text-white">{item.title}</span>} */}
 
-                    {/* Tooltip for collapsed mode */}
-                    {/* {collapsed && (
+            {/* Tooltip for collapsed mode */}
+            {/* {collapsed && (
                       <Tooltip title={item.title} parentRef={linkRefs.current[item.title]!} />
                     )}
                   </Link>

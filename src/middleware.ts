@@ -26,7 +26,13 @@ export default async function middleware(request: NextRequest) {
 }
 
 
+// export const config = {
+//     matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)', '/(en|es)/:path*'],
+// };
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)', '/(en|es)/:path*'],
+    matcher: [
+        '/((?!api|_next|.*\\..*).*)',
+        '/(en|es)/:path*'
+    ],
 };
 

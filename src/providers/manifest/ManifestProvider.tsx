@@ -77,7 +77,7 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
 
     const dowloadLabel = async (data: ManifestLabel) => {
         try {
-            //await createMasterPallet(data);
+            await createManifest(data);
             const response = await apiSubaru.downloadLabel({
                 endpoint: 'ManifestLabel', data
             });

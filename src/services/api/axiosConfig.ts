@@ -60,8 +60,12 @@ axiosInstance.interceptors.response.use(
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
                 localStorage.removeItem('accessToken');
+                const isProduction = process.env['NODE_ENV'] === 'production';
                 if (!window.location.pathname.includes('/authenticate/login')) {
-                    window.location.href = '/authenticate/login';
+                    if (isProduction)
+                        window.location.href = 'edihub/authenticate/login';
+                    else
+                        window.location.href = '/authenticate/login';
                 }
                 return Promise.reject(refreshError);
             }
