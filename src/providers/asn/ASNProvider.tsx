@@ -2,6 +2,8 @@
 
 import { useAppDispatch } from "@/app/store";
 import { BaseService } from "@/services/api/BaseService";
+import { apiASN } from "@/services/api/subaru/ASNApi";
+import { AxiosResponse } from "axios";
 import React, { useMemo, useState } from "react";
 import { FieldErrors, useForm, UseFormGetValues, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -25,6 +27,7 @@ interface IAdvanceShippingNoticeContext {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     save: (data: IAdvanceShippingNotice) => Promise<any>;
     update: (data: IAdvanceShippingNotice) => Promise<any>;
+    download: (data: IAdvanceShippingNotice) => Promise<any>;
 }
 
 const ASNContext = React.createContext<IAdvanceShippingNoticeContext | null>(null);
@@ -123,7 +126,9 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
             }
 
             await api.post({ data, endpoint: 'generate' });
+            await download(data);
             toast.success('ASN sent successfully');
+            setLoading(false);
         } catch (error) {
             console.error('Error sending ASN:', error);
             toast.error('Error sending ASN');
@@ -131,6 +136,32 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
             setLoading(false);
         }
     };
+
+    const download = async (data: IAdvanceShippingNotice) => {
+        try {
+            // const response = await api.post<AxiosResponse<Blob>>({ endpoint: 'download', data, isBlob: true });
+            const response = await apiASN.downloadASN({
+                endpoint: 'download', data
+            });
+
+            const contentDisposition = response?.headers['content-disposition'];
+            const fileName = contentDisposition
+                ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+                : 'asn.edi';
+
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'text/plain' }));
+            const link = document.createElement('a');
+            link.href = url;
+            // link.setAttribute('download', fileName);
+            link.download = fileName;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            // return response;
+        } catch (error) {
+            console.error('Error downloading ASN:', error);
+        }
+    }
 
     const value = useMemo(() => ({
         register,
@@ -145,8 +176,9 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
         loading,
         setLoading,
         save,
-        update
-    }), [errors, advanceShippingNotice]);
+        update,
+        download
+    }), [errors, advanceShippingNotice, loading, setLoading, setAdvanceShippingNotice, getValues, getByOrderId, send, save, update, download]);
 
     return (
         <ASNContext.Provider value={value}>

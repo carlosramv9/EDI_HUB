@@ -33,6 +33,9 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
             case 'manifest':
                 router.push(`/schedules/${id}/manifest`);
                 break;
+            case 'special-rack':
+                router.push(`/schedules/${id}/special-rack`);
+                break;
             default:
                 break;
         }
@@ -93,6 +96,12 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
                             onClick={() => handleAction('packaging-requirements', order.id!)}
                         >
                             {t('printPackaging')}
+                        </button>
+                        <button
+                            className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                            onClick={() => handleAction('special-rack', order.id!)}
+                        >
+                            {t('generateSpecialRack')}
                         </button>
                         <button
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"

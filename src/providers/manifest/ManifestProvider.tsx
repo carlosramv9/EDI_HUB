@@ -2,8 +2,9 @@
 import { ManifestLabel } from "@/interfaces/labels/IManifest";
 import ManifestApi from "@/services/api/labels/manifestApi";
 import { apiSubaru } from "@/services/api/subaru/SubaruApi";
+import dayjs from "dayjs";
 import React, { useMemo, useState } from "react";
-import { FieldErrors, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, useForm, UseFormGetValues, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
@@ -23,6 +24,8 @@ interface ManifestContext {
     handleSubmit: UseFormHandleSubmit<ManifestLabel>;
     errors: FieldErrors<ManifestLabel>;
     setValue: UseFormSetValue<ManifestLabel>;
+    clearRegister: () => void;
+    getValues: UseFormGetValues<ManifestLabel>;
 }
 
 const ManifestContext = React.createContext<ManifestContext | null>(null);
@@ -35,7 +38,8 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
         register,
         handleSubmit,
         formState: { errors },
-        setValue
+        setValue,
+        getValues
     } = useForm<ManifestLabel>()
 
     const getManifest = async (orderId: number) => {
@@ -64,6 +68,7 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
                 return;
             }
 
+            // console.log(data);
             await api.post({ data });
             const response = await api.get<ManifestLabel>({ endpoint: `order/${data.orderId}` });
             setManifest({ ...response, id: 0 });
@@ -99,6 +104,26 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
         }
     }
 
+    const clearRegister = () => {
+        setValue('partNumber', '');
+        setValue('doNumber', '');
+        setValue('partName', '');
+        setValue('supplierUse', 'A361-01');
+        setValue('shipDate', '');
+        setValue('ecsNumber', '');
+        setValue('quantity', 1);
+        setValue('lineDeliveryCode', '');
+        setValue('quantityRack', 1);
+        setValue('kanban', '');
+        setValue('whLoc', '');
+        setValue('orderCode', '');
+        setValue('fitLoc', '');
+        setValue('deliveryCode', '');
+        setValue('purchaseOrderNumber', '');
+        setValue('mfgDate', dayjs().format('YYYY-MM-DD'));
+        setValue('snp', '');
+    }
+
     const value = useMemo(() => ({
         manifest,
         setManifest,
@@ -109,7 +134,9 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
         register,
         handleSubmit,
         errors,
-        setValue
+        setValue,
+        clearRegister,
+        getValues
     }), [manifest])
 
     return (

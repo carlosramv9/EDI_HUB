@@ -3,7 +3,7 @@ import { ProductionPartLabel } from "@/interfaces/labels/IProductionParts";
 import ProductionPartApi from "@/services/api/labels/productionPartApi";
 import { apiSubaru } from "@/services/api/subaru/SubaruApi";
 import React, { useMemo, useState } from "react";
-import { FieldErrors, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, useForm, UseFormGetValues, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
@@ -23,6 +23,7 @@ interface ProductionPartContext {
     handleSubmit: UseFormHandleSubmit<ProductionPartLabel>;
     errors: FieldErrors<ProductionPartLabel>;
     setValue: UseFormSetValue<ProductionPartLabel>;
+    getValues: UseFormGetValues<ProductionPartLabel>;
 }
 
 const ProductionPartContext = React.createContext<ProductionPartContext | null>(null);
@@ -35,7 +36,8 @@ const ProductionPartProvider = ({ children }: ProductionPartProviderProps) => {
         register,
         handleSubmit,
         formState: { errors },
-        setValue
+        setValue,
+        getValues
     } = useForm<ProductionPartLabel>()
 
     const getProductionPart = async (orderId: number) => {
@@ -109,7 +111,8 @@ const ProductionPartProvider = ({ children }: ProductionPartProviderProps) => {
         register,
         handleSubmit,
         errors,
-        setValue
+        setValue,
+        getValues
     }), [productionPart])
 
     return (

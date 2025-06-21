@@ -83,8 +83,8 @@ export class BaseService<T> {
         return response.data;
     }
 
-    async post<T>({ endpoint = '', data, headers }: BaseServiceData): Promise<T> {
-        const response = await axiosInstance.post<T>(this.buildUrl(endpoint), data, { headers });
+    async post<T>({ endpoint = '', data, headers, isBlob = false }: BaseServiceData & { isBlob?: boolean }): Promise<T> {
+        const response = await axiosInstance.post<T>(this.buildUrl(endpoint), data, { headers, responseType: isBlob ? 'blob' : 'json' });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }

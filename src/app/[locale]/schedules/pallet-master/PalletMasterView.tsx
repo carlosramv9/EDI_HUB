@@ -1,6 +1,6 @@
 import MainLayout from '@/components/layouts/MainLayout'
 import React from 'react'
-import PalletMasterForm from '../../../../../components/forms/PalletMasterForm'
+import PalletMasterForm from '@/components/forms/PalletMasterForm'
 import OrdersProvider from '@/providers/orders/OrdersProvider'
 import PalletMasterProvider from '@/providers/pallet-master/PalletMasterProvider'
 

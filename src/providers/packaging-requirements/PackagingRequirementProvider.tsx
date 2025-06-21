@@ -4,6 +4,7 @@ import { ProductionPartLabel } from "@/interfaces/labels/IProductionParts";
 import PackagingRequirementApi from "@/services/api/labels/packagingRequirementsApi";
 import ProductionPartApi from "@/services/api/labels/productionPartApi";
 import { apiSubaru } from "@/services/api/subaru/SubaruApi";
+import dayjs from "dayjs";
 import React, { useMemo, useState } from "react";
 import { FieldErrors, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -25,6 +26,7 @@ interface PackagingRequirementContext {
     handleSubmit: UseFormHandleSubmit<PackagingRequirementLabel>;
     errors: FieldErrors<PackagingRequirementLabel>;
     setValue: UseFormSetValue<PackagingRequirementLabel>;
+    clearRegister: () => void;
 }
 
 const PackagingRequirementContext = React.createContext<PackagingRequirementContext | null>(null);
@@ -88,7 +90,7 @@ const PackagingRequirementProvider = ({ children }: PackagingRequirementProvider
             const fileName = contentDisposition
                 ? contentDisposition.split('filename=')[1].replace(/"/g, '')
                 : 'packaging-requirements-label.pdf';
-            
+
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
             const link = document.createElement('a');
             link.href = url;
@@ -101,6 +103,26 @@ const PackagingRequirementProvider = ({ children }: PackagingRequirementProvider
         }
     }
 
+    const clearRegister = () => {
+        setValue('partNumber', '');
+        setValue('doNumber', '');
+        setValue('partName', '');
+        setValue('supplierUse', 'A361-01');
+        setValue('shipDate', '');
+        setValue('ecsNumber', '');
+        setValue('quantity', 1);
+        setValue('lineDeliveryCode', '');
+        setValue('quantityRack', 1);
+        setValue('kanban', '');
+        setValue('whLoc', '');
+        setValue('orderCode', '');
+        setValue('fitLoc', '');
+        setValue('deliveryCode', '');
+        setValue('purchaseOrderNumber', '');
+        setValue('mfgDate', dayjs().format('YYYY-MM-DD'));
+        setValue('revision', '4');
+    }
+
     const value = useMemo(() => ({
         packagingRequirement,
         setPackagingRequirement,
@@ -111,7 +133,8 @@ const PackagingRequirementProvider = ({ children }: PackagingRequirementProvider
         register,
         handleSubmit,
         errors,
-        setValue
+        setValue,
+        clearRegister
     }), [packagingRequirement])
 
     return (

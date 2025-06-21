@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronCircleLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from '@/navigation';
-import { usePackagingRequirementContext } from '@/providers/packaging-requirements/PackagingRequirementProvider';
+import { useProductionPartContext } from '@/providers/production-parts/ProductionPartProvider';
 
 const inputClasses = classNames(
     "px-4 py-2.5 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 text-sm",
@@ -19,12 +19,12 @@ const inputClasses = classNames(
 )
 const labelClasses = "text-sm font-medium text-gray-700 mb-1.5"
 
-const PackagingRequirementForm = () => {
+const ProductionPartForm = () => {
     const router = useRouter();
     const orderData: IOrder = useAppSelector((state) => state.orders.data) || {};
     const loading: boolean = useAppSelector((state) => state.orders.loading);
     const { getOrderById } = useOrders();
-    const { register, errors, handleSubmit, setValue, packagingRequirement, getPackagingRequirementByOrderId, createMasterPallet, dowloadLabel } = usePackagingRequirementContext();
+    const { register, errors, handleSubmit, setValue, productionPart, getProductionPartByOrderId, createMasterPallet, dowloadLabel, getValues } = useProductionPartContext();
 
     const params = useParams();
     const id = params.id || '';
@@ -33,7 +33,7 @@ const PackagingRequirementForm = () => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    await getPackagingRequirementByOrderId(parseInt(id as string));
+                    await getProductionPartByOrderId(parseInt(id as string));
                 } catch (error) {
                     await getOrderById(id as string);
                 }
@@ -59,37 +59,39 @@ const PackagingRequirementForm = () => {
         setValue('deliveryCode', orderData?.lineDeliveryCycle);
         setValue('purchaseOrderNumber', orderData?.orderNumber);
         setValue('mfgDate', dayjs(orderData?.shipDate).format('YYYY-MM-DD'));
-        setValue('revision', '4');
+        setValue('revision', '0');
+        setValue('orderId', orderData?.id);
     }, [orderData])
 
     useEffect(() => {
-        setValue('partNumber', packagingRequirement?.partNumber);
-        setValue('doNumber', packagingRequirement?.doNumber);
-        setValue('partName', packagingRequirement?.partName);
+        setValue('partNumber', productionPart?.partNumber);
+        setValue('doNumber', productionPart?.doNumber);
+        setValue('partName', productionPart?.partName);
         setValue('supplierUse', 'A361-01');
-        setValue('shipDate', dayjs(packagingRequirement?.shipDate).format('YYYY-MM-DD'));
-        setValue('ecsNumber', packagingRequirement?.ecsNumber);
-        setValue('quantity', packagingRequirement?.quantity);
-        setValue('lineDeliveryCode', packagingRequirement?.lineDeliveryCode);
-        setValue('quantityRack', packagingRequirement?.quantityRack);
-        setValue('kanban', packagingRequirement?.kanban);
-        setValue('whLoc', packagingRequirement?.whLoc);
-        setValue('orderCode', packagingRequirement?.orderCode);
-        setValue('fitLoc', packagingRequirement?.fitLoc);
-        setValue('deliveryCode', packagingRequirement?.deliveryCode);
-        setValue('purchaseOrderNumber', packagingRequirement?.purchaseOrderNumber);
-        setValue('mfgDate', dayjs(packagingRequirement?.mfgDate).format('YYYY-MM-DD'));
-        // setValue('revision', packagingRequirement?.revision);
-        setValue('revision', '4');
-    }, [packagingRequirement])
+        setValue('shipDate', dayjs(productionPart?.shipDate).format('YYYY-MM-DD'));
+        setValue('ecsNumber', productionPart?.ecsNumber);
+        setValue('quantity', productionPart?.quantity);
+        setValue('lineDeliveryCode', productionPart?.lineDeliveryCode);
+        setValue('quantityRack', productionPart?.quantityRack);
+        setValue('kanban', productionPart?.kanban);
+        setValue('whLoc', productionPart?.whLoc);
+        setValue('orderCode', productionPart?.orderCode);
+        setValue('fitLoc', productionPart?.fitLoc);
+        setValue('deliveryCode', productionPart?.deliveryCode);
+        setValue('purchaseOrderNumber', productionPart?.purchaseOrderNumber);
+        setValue('mfgDate', dayjs(productionPart?.mfgDate).format('YYYY-MM-DD'));
+        setValue('revision', productionPart?.revision);
+        setValue('orderId', productionPart?.orderId);
+    }, [productionPart])
 
     const processData = handleSubmit(async (data) => {
-        await createMasterPallet({ ...data, orderId: Number(id) });
+        const values = getValues();
+        await createMasterPallet({ ...data, ...values, orderId: Number(id) });
     })
 
     const handleDownload = () => {
-        console.log(packagingRequirement);
-        dowloadLabel(packagingRequirement);
+        const values = getValues();
+        dowloadLabel({...productionPart, ...values});
     }
 
     if (loading) {
@@ -106,7 +108,7 @@ const PackagingRequirementForm = () => {
                 >
                     <FontAwesomeIcon icon={faChevronLeft} />
                 </button>
-                <h2 className="text-2xl font-bold text-gray-800">Packaging Requirement Label</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Pallet Master Label</h2>
             </div>
 
             <form onSubmit={processData} className="space-y-6">
@@ -363,4 +365,4 @@ const PackagingRequirementForm = () => {
     )
 }
 
-export default PackagingRequirementForm
+export default ProductionPartForm

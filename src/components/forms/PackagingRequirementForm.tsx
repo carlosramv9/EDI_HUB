@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronCircleLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from '@/navigation';
-import { useManifestContext } from '@/providers/manifest/ManifestProvider';
+import { usePackagingRequirementContext } from '@/providers/packaging-requirements/PackagingRequirementProvider';
 
 const inputClasses = classNames(
     "px-4 py-2.5 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 text-sm",
@@ -19,21 +19,25 @@ const inputClasses = classNames(
 )
 const labelClasses = "text-sm font-medium text-gray-700 mb-1.5"
 
-const ManifestForm = () => {
+const PackagingRequirementForm = () => {
     const router = useRouter();
     const orderData: IOrder = useAppSelector((state) => state.orders.data) || {};
     const loading: boolean = useAppSelector((state) => state.orders.loading);
     const { getOrderById } = useOrders();
-    const { register, errors, handleSubmit, setValue, manifest, getManifestByOrderId, createManifest, dowloadLabel } = useManifestContext();
+    const { register, errors, handleSubmit, setValue, packagingRequirement, getPackagingRequirementByOrderId, createMasterPallet, dowloadLabel, clearRegister } = usePackagingRequirementContext();
 
     const params = useParams();
     const id = params.id || '';
 
     useEffect(() => {
+        clearRegister();
+    }, [])
+
+    useEffect(() => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    await getManifestByOrderId(parseInt(id as string));
+                    await getPackagingRequirementByOrderId(parseInt(id as string));
                 } catch (error) {
                     await getOrderById(id as string);
                 }
@@ -59,36 +63,37 @@ const ManifestForm = () => {
         setValue('deliveryCode', orderData?.lineDeliveryCycle);
         setValue('purchaseOrderNumber', orderData?.orderNumber);
         setValue('mfgDate', dayjs(orderData?.shipDate).format('YYYY-MM-DD'));
-        setValue('snp', orderData?.snp);
+        setValue('revision', '4');
     }, [orderData])
 
     useEffect(() => {
-        setValue('partNumber', manifest?.partNumber);
-        setValue('doNumber', manifest?.doNumber);
-        setValue('partName', manifest?.partName);
+        setValue('partNumber', packagingRequirement?.partNumber);
+        setValue('doNumber', packagingRequirement?.doNumber);
+        setValue('partName', packagingRequirement?.partName);
         setValue('supplierUse', 'A361-01');
-        setValue('shipDate', dayjs(manifest?.shipDate).format('YYYY-MM-DD'));
-        setValue('ecsNumber', manifest?.ecsNumber);
-        setValue('quantity', manifest?.quantity);
-        setValue('lineDeliveryCode', manifest?.lineDeliveryCode);
-        setValue('quantityRack', manifest?.quantityRack);
-        setValue('kanban', manifest?.kanban);
-        setValue('whLoc', manifest?.whLoc);
-        setValue('orderCode', manifest?.orderCode);
-        setValue('fitLoc', manifest?.fitLoc);
-        setValue('deliveryCode', manifest?.deliveryCode);
-        setValue('purchaseOrderNumber', manifest?.purchaseOrderNumber);
-        setValue('mfgDate', dayjs(manifest?.mfgDate).format('YYYY-MM-DD'));
-        setValue('snp', manifest?.snp);
-    }, [manifest])
+        setValue('shipDate', dayjs(packagingRequirement?.shipDate).format('YYYY-MM-DD'));
+        setValue('ecsNumber', packagingRequirement?.ecsNumber);
+        setValue('quantity', packagingRequirement?.quantity);
+        setValue('lineDeliveryCode', packagingRequirement?.lineDeliveryCode);
+        setValue('quantityRack', packagingRequirement?.quantityRack);
+        setValue('kanban', packagingRequirement?.kanban);
+        setValue('whLoc', packagingRequirement?.whLoc);
+        setValue('orderCode', packagingRequirement?.orderCode);
+        setValue('fitLoc', packagingRequirement?.fitLoc);
+        setValue('deliveryCode', packagingRequirement?.deliveryCode);
+        setValue('purchaseOrderNumber', packagingRequirement?.purchaseOrderNumber);
+        setValue('mfgDate', dayjs(packagingRequirement?.mfgDate).format('YYYY-MM-DD'));
+        // setValue('revision', packagingRequirement?.revision);
+        setValue('revision', '4');
+    }, [packagingRequirement])
 
     const processData = handleSubmit(async (data) => {
-        console.log(data);
-        await createManifest({ ...data, orderId: Number(id) });
+        await createMasterPallet({ ...data, orderId: Number(id) });
     })
 
     const handleDownload = () => {
-        dowloadLabel(manifest);
+        console.log(packagingRequirement);
+        dowloadLabel(packagingRequirement);
     }
 
     if (loading) {
@@ -105,7 +110,7 @@ const ManifestForm = () => {
                 >
                     <FontAwesomeIcon icon={faChevronLeft} />
                 </button>
-                <h2 className="text-2xl font-bold text-gray-800">Manifest Label</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Packaging Requirement Label</h2>
             </div>
 
             <form onSubmit={processData} className="space-y-6">
@@ -362,4 +367,4 @@ const ManifestForm = () => {
     )
 }
 
-export default ManifestForm
+export default PackagingRequirementForm

@@ -5,23 +5,16 @@ import { useState, useEffect, useRef, createRef, createContext, useContext } fro
 import Link from "next/link"
 import Image from 'next/image'
 import { usePathname } from "next/navigation"
-import { routes, Sitemap } from '@/data/sitemap';
+import { RouteItem, routes } from '@/data/sitemap';
 import {
-  LayoutDashboard,
-  Users,
-  FileText,
-  Calendar,
-  BarChart3,
-  Bell,
-  Settings,
-  Sun,
-  Moon,
   ChevronDown,
   ChevronRight,
   MoreVertical,
 } from "lucide-react"
 import { useSidebar } from "@/context/SidebarContext"
 import classNames from "classnames"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useTranslations } from "next-intl"
 
 interface NavItem {
   title: string;
@@ -31,59 +24,13 @@ interface NavItem {
   submenuItems?: { title: string; href: string }[];
 }
 
-// Define the navigation items
-const mainNavItems: NavItem[] = [
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  // {
-  //   title: "Labels",
-  //   href: "/labels",
-  //   icon: Users,
-  //   submenu: true,
-  //   submenuItems: [
-  //     { title: "All Labels", href: "/labels" },
-  //     { title: "Create Label", href: "/labels/create" }
-  //   ]
-  // },
-  // {
-  //   title: "Sents",
-  //   href: "/sents",
-  //   icon: FileText,
-  // },
-  {
-    title: "Schedules",
-    href: "/schedules",
-    icon: Calendar,
-    submenu: true,
-    submenuItems: [
-      { title: "View Schedule", href: "/schedules" },
-      // { title: "Create Schedule", href: "/schedules/create" }
-    ]
-  },
-]
-
-const settingsNavItems: NavItem[] = [
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
-    submenu: true,
-    submenuItems: [
-      { title: "General", href: "/settings/general" },
-      { title: "Profile", href: "/settings/profile" }
-    ]
-  },
-]
-
 export default function Sidebar() {
   const { collapsed, setCollapsed } = useSidebar()
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null)
   const [activeSubmenuDropdown, setActiveSubmenuDropdown] = useState<string | null>(null)
   const [theme, setTheme] = useState("light")
   const pathname = usePathname()
+  const t = useTranslations()
 
   // Create refs for menu items
   const divRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -91,25 +38,27 @@ export default function Sidebar() {
 
   // Initialize refs for menu items
   useEffect(() => {
-    mainNavItems.forEach(item => {
-      divRefs.current[item.title] = divRefs.current[item.title] || createRef();
+    routes.forEach(item => {
+      item.children?.forEach(child => {
+        if (child.isVisible && child.name) {
+          console.log(child.name)
+          divRefs.current[child.name] = divRefs.current[child.name] || createRef();
+        }
+      })
     });
-    // settingsNavItems.forEach(item => {
-    //   linkRefs.current[item.title] = linkRefs.current[item.title] || createRef();
-    // });
-  }, []);
+  }, [routes]);
 
   // Check if we're on mobile and set collapsed state accordingly
   useEffect(() => {
-    // const handleResize = () => {
-    //   setCollapsed(window.innerWidth < 1024)
-    // }
+    const handleResize = () => {
+      setCollapsed(window.innerWidth < 1024)
+    }
 
-    // // Set initial state
-    // handleResize()
+    // Set initial state
+    handleResize()
 
-    // window.addEventListener("resize", handleResize)
-    // return () => window.removeEventListener("resize", handleResize)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   // Toggle submenu
@@ -146,18 +95,27 @@ export default function Sidebar() {
     return pathname === href || pathname.startsWith(href + "/")
   }
 
+  // Función auxiliar para evitar errores de traducción MISSING_MESSAGE
+  function safeT(key: string) {
+    try {
+      return t(key, { fallback: key });
+    } catch {
+      return key; // O puedes retornar '', null, etc.
+    }
+  }
+
   // Render submenu items
-  const renderSubmenuItems = (items: { title: string; href: string }[], parentTitle: string) => {
+  const renderSubmenuItems = (items: RouteItem[], parentTitle: string) => {
     return (
       <div className="pl-12 space-y-1">
         {items.map((item) => (
           <Link
-            key={item.title}
-            href={item.href}
-            className={`block py-2 text-sm ${isActive(item.href) ? "text-white font-medium" : "text-gray-600 hover:text-white"
+            key={item.name}
+            href={item.path}
+            className={`block py-2 text-sm ${isActive(item.path) ? "text-white font-medium" : "text-gray-600 hover:text-white"
               }`}
           >
-            {item.title}
+            {item.name}
           </Link>
         ))}
       </div>
@@ -165,7 +123,7 @@ export default function Sidebar() {
   }
 
   // Render dropdown for collapsed mode
-  const renderDropdown = (items: { title: string; href: string }[], parentTitle: string) => {
+  const renderDropdown = (items: RouteItem[], parentTitle: string) => {
     if (activeSubmenuDropdown !== parentTitle) return null;
 
     const parentElement = document.querySelector(`[data-item="${parentTitle}"]`);
@@ -179,11 +137,11 @@ export default function Sidebar() {
       >
         {items.map((item) => (
           <Link
-            key={item.title}
-            href={item.href}
+            key={item.name}
+            href={item.path}
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
-            {item.title}
+            {item.name}
           </Link>
         ))}
       </div>
@@ -261,60 +219,70 @@ export default function Sidebar() {
               'px-5': !collapsed
             }
           )}>
-            {!collapsed && <div className="mb-2 text-xs font-semibold text-white">MAIN</div>}
             {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">MAIN</div>} */}
-            <nav className="space-y-1">
-              {mainNavItems.map((item) => (
-                <div key={item.title} className="relative group">
-                  {/* Main nav item */}
-                  <div
-                    ref={!item.submenu ? divRefs.current[item.title] : null}
-                    className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${isActive(item.href)
-                      ? "bg-[#1E282C] dark:bg-gray-800 text-white"
-                      : "text-white hover:bg-gray-800 hover:text-white"
-                      }`}
-                    onClick={() => (item.submenu && !collapsed ? toggleSubmenu(item.title) : null)}
-                    data-item={item.title}
-                  >
-                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-white`} />
-                    {!collapsed && (
-                      <>
-                        <span className="flex-1 dark:text-white">{item.title}</span>
-                        {item.submenu && (
-                          <button onClick={(e) => toggleSubmenu(item.title)} className="focus:outline-none">
-                            {openSubmenu === item.title ? (
-                              <ChevronDown className="w-4 h-4" />
-                            ) : (
-                              <ChevronRight className="w-4 h-4" />
-                            )}
-                          </button>
-                        )}
-                      </>
-                    )}
+            <nav className="space-y-5">
+              {routes.map((item) => (<>
+                {!collapsed && <div className="text-[11px] font-bold text-white/75 uppercase mb-1">{safeT(item.name)}</div>}
+                <div className="space-y-1">
+                  {item.children?.map((child) => (
+                    <div>
+                      <Link href={child.path || '#'} key={child.name} className="relative group mb-1" passHref>
+                        {/* Main nav item */}
+                        <div
+                          ref={!item.children ? divRefs.current[item.name] : null}
+                          className={classNames(
+                            "flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-white/75",
+                            {
+                              "bg-[#404d53] dark:bg-gray-800": isActive(child.path),
+                              "hover:bg-[#404d53] hover:text-white": !isActive(child.path)
+                            },
+                          )}
+                          onClick={() => (child.children && !collapsed ? toggleSubmenu(child.name) : null)}
+                          data-item={child.name}
+                        >
+                          {child.icon && <FontAwesomeIcon icon={child.icon} className={`${collapsed ? "mx-auto" : "mr-3"} h-4 w-4 text-white/75`} />}
+                          {!collapsed && (
+                            <>
+                              <span className="flex-1 dark:text-white">{safeT(child.name)}</span>
+                              {child.children && (
+                                <button onClick={(e) => toggleSubmenu(child.name)} className="focus:outline-none">
+                                  {openSubmenu === child.name ? (
+                                    <ChevronDown className="w-4 h-4" />
+                                  ) : (
+                                    <ChevronRight className="w-4 h-4" />
+                                  )}
+                                </button>
+                              )}
+                            </>
+                          )}
 
-                    {/* Tooltip for collapsed mode */}
-                    {collapsed && !item.submenu && (
-                      <Tooltip title={item.title} parentRef={divRefs.current[item.title]!} />
-                    )}
+                          {/* Tooltip for collapsed mode */}
+                          {collapsed && !child.children && (
+                            <Tooltip title={child.name} parentRef={divRefs.current[child.name]!} />
+                          )}
 
-                    {/* Dropdown trigger for collapsed mode with submenu */}
-                    {collapsed && item.submenu && (
-                      <button
-                        onClick={(e) => toggleDropdown(e, item.title)}
-                        className="absolute inset-0 w-full h-full cursor-pointer z-[9998]"
-                      />
-                    )}
-                  </div>
+                          {/* Dropdown trigger for collapsed mode with submenu */}
+                          {collapsed && child.children && (
+                            <button
+                              onClick={(e) => toggleDropdown(e, child.name)}
+                              className="absolute inset-0 w-full h-full cursor-pointer z-[9998]"
+                            />
+                          )}
+                        </div>
 
-                  {/* Submenu for expanded mode */}
-                  {!collapsed &&
-                    item.submenu &&
-                    openSubmenu === item.title &&
-                    renderSubmenuItems(item.submenuItems!, item.title)}
+                        {/* Submenu for expanded mode */}
+                        {!collapsed &&
+                          child.children &&
+                          openSubmenu === child.name &&
+                          renderSubmenuItems(child.children!, child.name)}
 
-                  {/* Dropdown for collapsed mode */}
-                  {collapsed && item.submenu && renderDropdown(item.submenuItems!, item.title)}
+                        {/* Dropdown for collapsed mode */}
+                        {collapsed && child.children && renderDropdown(child.children!, child.name)}
+                      </Link>
+                    </div>
+                  ))}
                 </div>
+              </>
               ))}
             </nav>
           </div>
@@ -327,30 +295,6 @@ export default function Sidebar() {
               'px-5': !collapsed
             }
           )}>
-            {/* {!collapsed && <div className="mb-2 text-xs font-semibold text-gray-500">SETTINGS</div>} */}
-            {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">SETTINGS</div>} */}
-            {/* <nav className="space-y-1">
-              {settingsNavItems.map((item) => (
-                <div key={item.title} className="relative group">
-                  <Link
-                    ref={linkRefs.current[item.title]}
-                    href={item.href}
-                    className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive(item.href)
-                      ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
-                      }`}
-                  >
-                    <item.icon className={`${collapsed ? "mx-auto" : "mr-3"} h-5 w-5 text-gray-500 dark:text-white`} />
-                    {!collapsed && <span className="dark:text-white">{item.title}</span>} */}
-
-            {/* Tooltip for collapsed mode */}
-            {/* {collapsed && (
-                      <Tooltip title={item.title} parentRef={linkRefs.current[item.title]!} />
-                    )}
-                  </Link>
-                </div>
-              ))}
-            </nav> */}
           </div>
         </div>
 
@@ -399,7 +343,7 @@ export default function Sidebar() {
         >
           <ChevronRight className={`w-4 h-4 text-gray-600 transition-transform ${collapsed ? "" : "rotate-180"}`} />
         </button>
-      </aside>
-    </div>
+      </aside >
+    </div >
   )
 }

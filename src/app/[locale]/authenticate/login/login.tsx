@@ -37,16 +37,14 @@ const Login = () => {
     }
   }, [userData])
 
-  const { handleSubmit, login, register } = useAuth();
+  const { handleSubmit, login, register, errors } = useAuth();
 
   const { toggleLanguage, isSpanish } = useLanguage()
   const [showPassword, setShowPassword] = useState(false)
 
   const processData = handleSubmit(async (data) => {
+    console.log('data', data);
     const { username, password } = data
-
-    console.log('username', username);
-    console.log('password', password);
 
     await login(username, password);
   })
@@ -80,8 +78,9 @@ const Login = () => {
               type="text"
               id="username"
               placeholder={t('usernamePlaceholder')}
-              register={register}
               isRequired={true}
+              register={register}
+              error={errors.username?.message}
             />
 
             <InputField
@@ -89,8 +88,9 @@ const Login = () => {
               type={showPassword ? 'text' : 'password'}
               id="password"
               placeholder={t('passwordPlaceholder')}
-              register={register}
               isRequired={true}
+              register={register}
+              error={errors.password?.message}
               icon={
                 <PasswordToggle
                   show={showPassword}

@@ -102,5 +102,15 @@
   "of": "of",
   "previous": "Previous",
   "next": "Next",
-  "printManifest": "Print Manifest Label"
+  "printManifest": "Print Manifest Label",
+  "generateSpecialRack": "Generate Special Rack",
+  "Main": "Main",
+  "dashboard": "Dashboard",
+  "schedules": "Schedules",
+  "labels": "Labels",
+  "masterPackingLabel": "Master Packing Label",
+  "shippingLabel": "Shipping Label",
+  "users": "Users",
+  "roles": "Roles",
+  "schedulesSent": "Schedules Sent"
 }

@@ -103,5 +103,16 @@
   "previous": "Anterior",
   "next": "Siguiente",
   "printManifest": "Imprimir Manifest Label",
-  "to": "a"
+  "to": "a",
+  "generateSpecialRack": "Generar Special Rack",
+  "Main": "Principal",
+  "dashboard": "Panel de Control",
+  "schedules": "Programación",
+  "labels": "Etiquetas",
+  "masterPackingLabel": "Etiqueta Master Packing",
+  "shippingLabel": "",
+  "productionParts": "Etiqueta Production Parts",
+  "users": "Usuarios",
+  "roles": "Roles",
+  "schedulesSent": "Programaciones Enviadas"
 }

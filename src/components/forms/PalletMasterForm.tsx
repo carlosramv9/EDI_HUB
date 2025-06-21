@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronCircleLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from '@/navigation';
-import { useProductionPartContext } from '@/providers/production-parts/ProductionPartProvider';
+import { usePalletMasterContext } from '@/providers/pallet-master/PalletMasterProvider';
 
 const inputClasses = classNames(
     "px-4 py-2.5 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 text-sm",
@@ -19,12 +19,12 @@ const inputClasses = classNames(
 )
 const labelClasses = "text-sm font-medium text-gray-700 mb-1.5"
 
-const ProductionPartForm = () => {
+const PalletMasterForm = () => {
     const router = useRouter();
     const orderData: IOrder = useAppSelector((state) => state.orders.data) || {};
     const loading: boolean = useAppSelector((state) => state.orders.loading);
     const { getOrderById } = useOrders();
-    const { register, errors, handleSubmit, setValue, productionPart, getProductionPartByOrderId, createMasterPallet, dowloadLabel } = useProductionPartContext();
+    const { register, errors, handleSubmit, setValue, palletMaster, getPalletMasterByOrderId, createMasterPallet, dowloadLabel } = usePalletMasterContext();
 
     const params = useParams();
     const id = params.id || '';
@@ -33,7 +33,7 @@ const ProductionPartForm = () => {
         const fetchData = async () => {
             if (id) {
                 try {
-                    await getProductionPartByOrderId(parseInt(id as string));
+                    await getPalletMasterByOrderId(parseInt(id as string));
                 } catch (error) {
                     await getOrderById(id as string);
                 }
@@ -43,51 +43,48 @@ const ProductionPartForm = () => {
     }, [id])
 
     useEffect(() => {
-        setValue('partNumber', orderData?.partNumber);
-        setValue('doNumber', orderData?.orderNumber);
-        setValue('partName', orderData?.partName);
-        setValue('supplierUse', 'A361-01');
+        setValue('asnNumber', orderData?.asnNumber);
+        setValue('destination', orderData?.shipTo);
+        setValue('supplierCode', 'A361-01');
+        setValue('deliveryOrder', orderData?.orderNumber);
         setValue('shipDate', dayjs(orderData?.shipDate).format('YYYY-MM-DD'));
-        setValue('ecsNumber', orderData?.ecs);
-        setValue('quantity', orderData?.quantity);
-        setValue('lineDeliveryCode', orderData?.lineDeliveryCycle);
-        setValue('quantityRack', orderData?.quantityRack);
+        setValue('partNumber', orderData?.partNumber);
+        setValue('routeNumber', orderData?.pickupRoute);
         setValue('kanban', orderData?.kanban);
-        setValue('whLoc', orderData?.whLocationCode);
+        setValue('dockCode', orderData?.shopCode);
+        setValue('quantity', orderData?.quantity);
+        setValue('doNumber', orderData?.orderNumber);
+        setValue('quantityRack', orderData?.quantityRack);
+        setValue('partName', orderData?.partName);
+        setValue('ecsNumber', orderData?.ecs);
         setValue('orderCode', orderData?.orderCode);
         setValue('fitLoc', orderData?.fitLocation);
-        setValue('deliveryCode', orderData?.lineDeliveryCycle);
-        setValue('purchaseOrderNumber', orderData?.orderNumber);
-        setValue('mfgDate', dayjs(orderData?.shipDate).format('YYYY-MM-DD'));
-        setValue('revision', '0');
+        setValue('whLoc', orderData?.whLocationCode);
+        setValue('orderId', orderData?.id);
     }, [orderData])
 
     useEffect(() => {
-        setValue('partNumber', productionPart?.partNumber);
-        setValue('doNumber', productionPart?.doNumber);
-        setValue('partName', productionPart?.partName);
-        setValue('supplierUse', 'A361-01');
-        setValue('shipDate', dayjs(productionPart?.shipDate).format('YYYY-MM-DD'));
-        setValue('ecsNumber', productionPart?.ecsNumber);
-        setValue('quantity', productionPart?.quantity);
-        setValue('lineDeliveryCode', productionPart?.lineDeliveryCode);
-        setValue('quantityRack', productionPart?.quantityRack);
-        setValue('kanban', productionPart?.kanban);
-        setValue('whLoc', productionPart?.whLoc);
-        setValue('orderCode', productionPart?.orderCode);
-        setValue('fitLoc', productionPart?.fitLoc);
-        setValue('deliveryCode', productionPart?.deliveryCode);
-        setValue('purchaseOrderNumber', productionPart?.purchaseOrderNumber);
-        setValue('mfgDate', dayjs(productionPart?.mfgDate).format('YYYY-MM-DD'));
-        setValue('revision', productionPart?.revision);
-    }, [productionPart])
+        setValue('asnNumber', palletMaster?.asnNumber);
+        setValue('destination', palletMaster?.destination);
+        setValue('supplierCode', 'A361-01');
+        setValue('deliveryOrder', palletMaster?.deliveryOrder);
+        setValue('shipDate', dayjs(palletMaster?.shipDate).format('YYYY-MM-DD'));
+        setValue('partNumber', palletMaster?.partNumber);
+        setValue('routeNumber', palletMaster?.routeNumber);
+        setValue('kanban', palletMaster?.kanban);
+        setValue('dockCode', palletMaster?.dockCode);
+        setValue('quantity', palletMaster?.quantity);
+        setValue('doNumber', palletMaster?.doNumber);
+        setValue('quantityRack', palletMaster?.quantityRack);
+        setValue('orderId', palletMaster?.orderId);
+    }, [palletMaster])
 
     const processData = handleSubmit(async (data) => {
         await createMasterPallet({ ...data, orderId: Number(id) });
     })
 
     const handleDownload = () => {
-        dowloadLabel(productionPart);
+        dowloadLabel(palletMaster);
     }
 
     if (loading) {
@@ -113,6 +110,130 @@ const ProductionPartForm = () => {
                     <div className="space-y-5">
                         <div className="flex flex-col">
                             <label className={labelClasses}>
+                                ASN Number
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="ASN Number"
+                                {...register('asnNumber', { required: { value: true, message: 'ASN Number is required' } })}
+                                aria-invalid={errors.asnNumber ? 'true' : 'false'}
+                            />
+                            {errors.asnNumber && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.asnNumber.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Supplier Code
+                            </label>
+                            <input
+                                type="text"
+                                className={`${inputClasses} bg-gray-50`}
+                                // defaultValue="A361-01"
+                                {...register('supplierCode', { required: { value: true, message: 'Supplier Code is required' } })}
+                                aria-invalid={errors.supplierCode ? 'true' : 'false'}
+                                readOnly
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Ship Date
+                            </label>
+                            <input
+                                type="date"
+                                className={inputClasses}
+                                {...register('shipDate', { required: { value: true, message: 'Ship Date is required' } })}
+                                aria-invalid={errors.shipDate ? 'true' : 'false'}
+                            />
+                            {errors.shipDate && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.shipDate.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Route Number
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Route Number"
+                                {...register('routeNumber', { required: { value: true, message: 'Route Number is required' } })}
+                                aria-invalid={errors.routeNumber ? 'true' : 'false'}
+                            />
+                            {errors.routeNumber && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.routeNumber.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Dock Code
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Dock Code"
+                                {...register('dockCode', { required: { value: true, message: 'Dock Code is required' } })}
+                                aria-invalid={errors.dockCode ? 'true' : 'false'}
+                            />
+                            {errors.dockCode && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.dockCode.message}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Segunda columna */}
+                    <div className="space-y-5">
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Destination
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Destination"
+                                {...register('destination', { required: { value: true, message: 'Destination is required' } })}
+                                aria-invalid={errors.destination ? 'true' : 'false'}
+                            />
+                            {errors.destination && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.destination.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Delivery Order
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Delivery Order"
+                                {...register('deliveryOrder', { required: { value: true, message: 'Delivery Order is required' } })}
+                                aria-invalid={errors.deliveryOrder ? 'true' : 'false'}
+                            />
+                            {errors.deliveryOrder && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.deliveryOrder.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
                                 Part Number
                             </label>
                             <input
@@ -129,104 +250,6 @@ const ProductionPartForm = () => {
                             )}
                         </div>
 
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                D/O #
-                            </label>
-                            <input
-                                type="text"
-                                className={`${inputClasses} bg-gray-50`}
-                                // defaultValue="A361-01"
-                                {...register('doNumber', { required: { value: true, message: 'D/O # is required' } })}
-                                aria-invalid={errors.doNumber ? 'true' : 'false'}
-                                readOnly
-                            />
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Part Name
-                            </label>
-                            <input
-                                type="text"
-                                className={`${inputClasses} bg-gray-50`}
-                                // defaultValue="A361-01"
-                                {...register('partName', { required: { value: true, message: 'Part Name is required' } })}
-                                aria-invalid={errors.partName ? 'true' : 'false'}
-                                readOnly
-                            />
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Supplier Code
-                            </label>
-                            <input
-                                type="text"
-                                className={`${inputClasses} bg-gray-50`}
-                                // defaultValue="A361-01"
-                                {...register('supplierUse', { required: { value: true, message: 'Supplier Code is required' } })}
-                                aria-invalid={errors.supplierUse ? 'true' : 'false'}
-                                readOnly
-                            />
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                ECS #
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                {...register('ecsNumber', { required: { value: true, message: 'ECS # is required' } })}
-                                aria-invalid={errors.ecsNumber ? 'true' : 'false'}
-                            />
-                            {errors.ecsNumber && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.ecsNumber.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Quantity
-                            </label>
-                            <input
-                                type="number"
-                                className={inputClasses}
-                                placeholder="Quantity"
-                                {...register('quantity', { required: { value: true, message: 'Quantity is required' } })}
-                                aria-invalid={errors.quantity ? 'true' : 'false'}
-                            />
-                            {errors.quantity && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.quantity.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Line Delivery Cycle
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                placeholder="Line Delivery Cycle"
-                                {...register('lineDeliveryCode', { required: { value: true, message: 'Line Delivery Cycle is required' } })}
-                                aria-invalid={errors.lineDeliveryCode ? 'true' : 'false'}
-                            />
-                            {errors.lineDeliveryCode && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.lineDeliveryCode.message}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Segunda columna */}
-                    <div className="space-y-5">
                         <div className="flex flex-col">
                             <label className={labelClasses}>
                                 Kanban
@@ -247,72 +270,18 @@ const ProductionPartForm = () => {
 
                         <div className="flex flex-col">
                             <label className={labelClasses}>
-                                WH Location
+                                Quantity
                             </label>
                             <input
-                                type="text"
+                                type="number"
                                 className={inputClasses}
-                                placeholder="WH Location"
-                                {...register('whLoc', { required: { value: true, message: 'WH Location is required' } })}
-                                aria-invalid={errors.whLoc ? 'true' : 'false'}
+                                placeholder="Quantity"
+                                {...register('quantity', { required: { value: true, message: 'Quantity is required' } })}
+                                aria-invalid={errors.quantity ? 'true' : 'false'}
                             />
-                            {errors.whLoc && (
+                            {errors.quantity && (
                                 <p className="text-red-500 text-sm mt-1">
-                                    {errors.whLoc.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Order Code
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                placeholder="Order Code"
-                                {...register('orderCode', { required: { value: true, message: 'Order Code is required' } })}
-                                aria-invalid={errors.orderCode ? 'true' : 'false'}
-                            />
-                            {errors.orderCode && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.orderCode.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Ship Date
-                            </label>
-                            <input
-                                type="date"
-                                className={inputClasses}
-                                placeholder="Ship Date"
-                                {...register('shipDate', { required: { value: true, message: 'Ship Date is required' } })}
-                                aria-invalid={errors.shipDate ? 'true' : 'false'}
-                            />
-                            {errors.shipDate && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.shipDate.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Fit Location
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                placeholder="Fit Location"
-                                {...register('fitLoc', { required: { value: true, message: 'Fit Location is required' } })}
-                                aria-invalid={errors.fitLoc ? 'true' : 'false'}
-                            />
-                            {errors.fitLoc && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.fitLoc.message}
+                                    {errors.quantity.message}
                                 </p>
                             )}
                         </div>
@@ -361,4 +330,4 @@ const ProductionPartForm = () => {
     )
 }
 
-export default ProductionPartForm
+export default PalletMasterForm

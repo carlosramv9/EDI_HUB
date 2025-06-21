@@ -72,14 +72,15 @@ const ASNForm = () => {
     }, [advanceShippingNotice])
 
     const onSubmit = async (data: IAdvanceShippingNotice) => {
-        await send({ ...data, shipment: '', controlNumber: '' });
+        const values = getValues();
+        await send({ ...data, ...values, shipment: '', controlNumber: '', orderId: Number(id) });
     };
 
     const saveData = async () => {
         const data = getValues()
 
-        if (data.id) await update({ ...advanceShippingNotice, ...data });
-        else await save({ ...data });
+        if (data.id) await update({ ...advanceShippingNotice, ...data, orderId: Number(id) });
+        else await save({ ...data, orderId: Number(id) });
     };
 
     if (loading) return <Loader />;
@@ -160,7 +161,7 @@ const ASNForm = () => {
                         <label className={labelClasses}>Route Number</label>
                         <input
                             {...register('routerNumber', {
-                                required: 'Field Required'
+                                required: { value: false, message: 'Field Required' }
                             })}
                             className={classNames(inputClasses, errors.routerNumber ? 'border-red-500' : '')}
                             placeholder="Route Number"
@@ -172,7 +173,7 @@ const ASNForm = () => {
                         <label className={labelClasses}>Authorization Number</label>
                         <input
                             {...register('authorizationNumber', {
-                                required: 'Field Required'
+                                required: { value: false, message: 'Field Required' }
                             })}
                             className={classNames(inputClasses, errors.authorizationNumber ? 'border-red-500' : '')}
                             placeholder="Authorization Number"

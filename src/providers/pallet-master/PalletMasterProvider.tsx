@@ -3,7 +3,7 @@ import { PalletMasterLabel } from "@/interfaces/labels/IPalletMaster";
 import PalletMasterApi from "@/services/api/labels/palletMasterApi";
 import { apiSubaru } from "@/services/api/subaru/SubaruApi";
 import React, { useMemo, useState } from "react";
-import { FieldErrors, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, useForm, UseFormGetValues, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
@@ -23,6 +23,7 @@ interface PalletMasterContext {
     handleSubmit: UseFormHandleSubmit<PalletMasterLabel>;
     errors: FieldErrors<PalletMasterLabel>;
     setValue: UseFormSetValue<PalletMasterLabel>;
+    getValues: UseFormGetValues<PalletMasterLabel>;
 }
 
 const PalletMasterContext = React.createContext<PalletMasterContext | null>(null);
@@ -35,7 +36,8 @@ const PalletMasterProvider = ({ children }: PalletMasterProviderProps) => {
         register,
         handleSubmit,
         formState: { errors },
-        setValue
+        setValue,
+        getValues
     } = useForm<PalletMasterLabel>()
 
     const getPalletMaster = async (orderId: number) => {
@@ -77,7 +79,8 @@ const PalletMasterProvider = ({ children }: PalletMasterProviderProps) => {
 
     const dowloadLabel = async (data: PalletMasterLabel) => {
         try {
-            await createMasterPallet(data);
+            const values = getValues();
+            await createMasterPallet({ ...data, ...values });
             const response = await apiSubaru.downloadLabel({
                 endpoint: 'PalletMasterLabel', data
             });
@@ -86,7 +89,7 @@ const PalletMasterProvider = ({ children }: PalletMasterProviderProps) => {
             const fileName = contentDisposition
                 ? contentDisposition.split('filename=')[1].replace(/"/g, '')
                 : 'pallet-master-label.pdf';
-            
+
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
             const link = document.createElement('a');
             link.href = url;
@@ -109,7 +112,8 @@ const PalletMasterProvider = ({ children }: PalletMasterProviderProps) => {
         register,
         handleSubmit,
         errors,
-        setValue
+        setValue,
+        getValues
     }), [palletMaster])
 
     return (
