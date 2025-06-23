@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from '@/navigation';
 import { useParams } from 'next/navigation';
-import { FieldErrors, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import classNames from 'classnames';
 import { useOrders } from '@/providers/orders/OrdersProvider';
 import { useAppSelector } from '@/app/store';
@@ -74,6 +73,7 @@ const ASNForm = () => {
     const onSubmit = async (data: IAdvanceShippingNotice) => {
         const values = getValues();
         await send({ ...data, ...values, shipment: '', controlNumber: '', orderId: Number(id) });
+        router.push(`/schedules`);
     };
 
     const saveData = async () => {
@@ -157,7 +157,7 @@ const ASNForm = () => {
                         {errors.carrierRef && <p className="text-red-500 text-xs mt-1">{errors.carrierRef.message}</p>}
                     </div>
 
-                    <div>
+                    {/* <div>
                         <label className={labelClasses}>Route Number</label>
                         <input
                             {...register('routerNumber', {
@@ -179,7 +179,7 @@ const ASNForm = () => {
                             placeholder="Authorization Number"
                         />
                         {errors.authorizationNumber && <p className="text-red-500 text-xs mt-1">{errors.authorizationNumber.message}</p>}
-                    </div>
+                    </div> */}
 
                     <div>
                         <label className={labelClasses}>Part Number</label>

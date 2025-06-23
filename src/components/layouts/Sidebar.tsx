@@ -194,7 +194,7 @@ export default function Sidebar() {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
                 <div className="relative w-8 h-8 rounded-full flex items-center justify-center">
-                  <img src="/globe.svg" alt="" className="w-6 h-6 text-white invert" />
+                  {/* <img src="/globe.svg" alt="" className="w-6 h-6 text-white invert" /> */}
                 </div>
                 <span className="ml-2 text-lg font-semibold text-white">EDI HUB</span>
               </div>

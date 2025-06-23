@@ -56,7 +56,6 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
 
     const save = async (data: IAdvanceShippingNotice) => {
         try {
-            setLoading(true);
             const confirmation = await Swal.fire({
                 title: 'Save ASN',
                 text: 'This action cannot be undone!',
@@ -70,6 +69,7 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
             if (!confirmation.isConfirmed) {
                 return;
             }
+            setLoading(true);
 
             await api.post({ data });
             toast.success('ASN saved successfully');
@@ -110,7 +110,6 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
 
     const send = async (data: IAdvanceShippingNotice) => {
         try {
-            setLoading(true);
             const confirmation = await Swal.fire({
                 title: 'Send ASN',
                 text: 'This action cannot be undone!',
@@ -124,9 +123,10 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
             if (!confirmation.isConfirmed) {
                 return;
             }
+            setLoading(true);
 
             await api.post({ data, endpoint: 'generate' });
-            await download(data);
+            // await download(data);
             toast.success('ASN sent successfully');
             setLoading(false);
         } catch (error) {
