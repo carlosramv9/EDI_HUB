@@ -12,8 +12,8 @@ export interface SMUsers extends SearchModel {
 
 export interface SMOrders extends SearchModel {
     search?: string;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: string;
+    endDate?: string;
 }
 
 

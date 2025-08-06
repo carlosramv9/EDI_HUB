@@ -53,8 +53,8 @@ const SchedulesTable = () => {
             setSearchModel({
                 ...searchModel,
                 search: search,
-                startDate: date?.from || dayjs().startOf('week').toDate(),
-                endDate: date?.to || dayjs().endOf('week').toDate()
+                startDate: date?.from ? dayjs(date.from).format('YYYY-DD-MM') : undefined,
+                endDate: date?.to ? dayjs(date.to).format('YYYY-DD-MM') : undefined
             });
         }, 500);
         return () => clearTimeout(timer);
