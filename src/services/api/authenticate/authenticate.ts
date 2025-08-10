@@ -48,7 +48,7 @@ class AuthenticateApi extends BaseService<Record<string, any>> {
     }
 
     async getDataUser(): Promise<BaseServiceResponse> {
-        return await this.getById({ id: '' }) as BaseServiceResponse;
+        return await this.get() as BaseServiceResponse;
     }
 }
 

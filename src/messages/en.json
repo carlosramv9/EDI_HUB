@@ -112,5 +112,6 @@
   "shippingLabel": "Shipping Label",
   "users": "Users",
   "roles": "Roles",
-  "schedulesSent": "Schedules Sent"
+  "schedulesSent": "Schedules Sent",
+  "cancelOrder": "Cancel Order"
 }

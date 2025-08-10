@@ -1,6 +1,6 @@
 import { useAppSelector } from '@/app/store';
 import { validatePermissions } from '@/helpers/validatePermisison';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface WithPermissionsProps {
     permissions: string[];
@@ -12,7 +12,11 @@ const WithPermissions = ({
     children,
 }: WithPermissionsProps) => {
     const permisison = useAppSelector((state) => state.auth.user?.roleName);
-    const hasPermission = validatePermissions(permissions, [permisison ?? '']);
+    const [hasPermission, setHasPermission] = useState(false);
+
+    useEffect(() => {
+        setHasPermission(validatePermissions(permissions, [permisison ?? '']));
+    }, [permisison, permissions]);
 
     if (!hasPermission) {
         return null;

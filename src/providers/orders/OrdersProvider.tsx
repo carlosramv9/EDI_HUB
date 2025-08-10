@@ -24,10 +24,10 @@ interface OrdersProps<T> {
     setValue: UseFormSetValue<IOrder>;
     control: Control<IOrder>;
     errors: FieldErrors<IOrder>;
-    searchModel: SMOrders;
-    setSearchModel: (searchModel: SMOrders) => void;
+    searchModel: SMOrders | undefined;
+    setSearchModel: (searchModel: SMOrders | undefined) => void;
     handleSubmit: UseFormHandleSubmit<IOrder>;
-    getOrdersList: () => Promise<void>;
+    getOrdersList: (sm?: SMOrders) => Promise<void>;
     getOrderById: (id: string) => Promise<void>;
     createOrder: (order: IOrder) => Promise<void>;
     updateOrder: (order: IOrder) => Promise<void>;
@@ -35,6 +35,7 @@ interface OrdersProps<T> {
     openMenuId: number | null;
     setOpenMenuId: (id: number | null) => void;
     uploadFiles: (files: File[]) => Promise<void>;
+    cancelOrder: (id: number) => Promise<void>;
 }
 
 const OrdersContext = createContext<OrdersProps<IOrder>>({
@@ -55,7 +56,8 @@ const OrdersContext = createContext<OrdersProps<IOrder>>({
     handleSubmit: {} as UseFormHandleSubmit<IOrder>,
     openMenuId: null,
     setOpenMenuId: () => { },
-    uploadFiles: (files: File[]) => Promise.resolve()
+    uploadFiles: (files: File[]) => Promise.resolve(),
+    cancelOrder: (id: number) => Promise.resolve()
 });
 
 export const useOrders = () => {
@@ -71,14 +73,7 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
     const [files, setFiles] = useState<File[]>([]);
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const dispatch = useAppDispatch();
-    const [searchModel, setSearchModel] = useState<SMOrders>({
-        id: '',
-        orderColumn: 'id',
-        orderDirection: 'desc',
-        page: 1,
-        pageSize: 10,
-        search: ''
-    });
+    const [searchModel, setSearchModel] = useState<SMOrders>();
 
     const { register, control, formState: { errors }, handleSubmit, setValue } = useForm<IOrder>({
         defaultValues: {
@@ -96,10 +91,10 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         }
     });
 
-    const getOrdersList = async () => {
+    const getOrdersList = async (sm?: SMOrders) => {
         dispatch(getOrders());
         try {
-            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: searchModel });
+            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: { ...searchModel, ...sm } as SMOrders });
             dispatch(getOrdersSuccess({ data: orders.data, total: orders.total }));
         } catch (error) {
             dispatch(getOrdersFailure(error));
@@ -173,6 +168,17 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         }
     }
 
+    const cancelOrder = async (id: number) => {
+        dispatch(getOrders());
+        try {
+            await ordersApi.delete({ id, endpoint: 'cancel' });
+            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: searchModel });
+            dispatch(getOrdersSuccess({ data: orders.data, total: orders.total }));
+        } catch (error) {
+            dispatch(getOrdersFailure(error));
+        }
+    }
+
     const options = useMemo(() => ({
         register,
         setValue,
@@ -192,8 +198,9 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         setSearchModel,
         files,
         setFiles,
-        uploadFiles
-    }), [register, control, errors, handleSubmit, orders, setOrders, getOrdersList, getOrderById, createOrder, updateOrder, searchModel, setSearchModel, files, setFiles, uploadFiles])
+        uploadFiles,
+        cancelOrder
+    }), [register, control, errors, handleSubmit, orders, setOrders, getOrdersList, getOrderById, createOrder, updateOrder, searchModel, setSearchModel, files, setFiles, uploadFiles, cancelOrder])
 
     return <OrdersContext.Provider value={options}>
         {children}

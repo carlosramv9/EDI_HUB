@@ -114,5 +114,6 @@
   "productionParts": "Etiqueta Production Parts",
   "users": "Usuarios",
   "roles": "Roles",
-  "schedulesSent": "Programaciones Enviadas"
+  "schedulesSent": "Programaciones Enviadas",
+  "cancelOrder": "Cancelar Orden"
 }

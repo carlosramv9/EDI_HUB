@@ -28,6 +28,7 @@ import { DatePickerWithRange } from '@/components/shared/DatePickerRange';
 import { DateRange } from 'react-day-picker';
 import dayjs from 'dayjs';
 import WithPermissions from '@/components/shared/WithPermissions';
+import { SMOrders } from '@/interfaces/searchModel/SearchModels';
 
 const SchedulesTable = () => {
     const orders = useAppSelector((state) => state.orders.list);
@@ -45,22 +46,41 @@ const SchedulesTable = () => {
     const { setViewTitle } = useConfiguration();
 
     useEffect(() => {
-        getOrdersList();
+        if (searchModel) {
+            getOrdersList();
+        }
     }, [searchModel]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setSearchModel({
-                ...searchModel,
-                search: search,
-                startDate: date?.from ? dayjs(date.from).format('YYYY-DD-MM') : undefined,
-                endDate: date?.to ? dayjs(date.to).format('YYYY-DD-MM') : undefined
-            });
-        }, 500);
-        return () => clearTimeout(timer);
+        if (search || date) {
+            const timer = setTimeout(() => {
+                var sm = {
+                    ...searchModel,
+                    orderColumn: 'id',
+                    orderDirection: 'desc',
+                    search: search,
+                    startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
+                    endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
+                    active: true
+                };
+                setSearchModel(sm);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
     }, [search, date]);
 
     useEffect(() => {
+        const sm: SMOrders = {
+            orderColumn: 'id',
+            orderDirection: 'desc',
+            page: 1,
+            pageSize: 10,
+            startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
+            endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
+            active: true
+        }
+        setSearchModel(sm);
+
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current &&
                 buttonRef.current &&
@@ -89,7 +109,7 @@ const SchedulesTable = () => {
                             <Input type="text" className="w-64" placeholder="Buscar (Orden, ASN, Parte, etc.)..." value={search} onChange={(e) => setSearch(e.target.value)} />
                             <DatePickerWithRange date={date} setDate={setDate} />
                             <div className="ml-auto">
-                                <PaginationSimple pageSize={10} searchModel={searchModel} setSearchModel={setSearchModel} totalRecords={total} />
+                                <PaginationSimple pageSize={10} searchModel={searchModel ?? {}} setSearchModel={setSearchModel} totalRecords={total} />
                             </div>
                         </div>
                     </CardContent>

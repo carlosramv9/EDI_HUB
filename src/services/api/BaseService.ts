@@ -66,7 +66,7 @@ export class BaseService<T> {
         return response.data;
     }
 
-    async get<T>({ endpoint = '', headers }: BaseServiceParams): Promise<T> {
+    async get<T>({ endpoint = '', headers }: BaseServiceParams = {}): Promise<T> {
         const response = await axiosInstance.get<T>(this.buildUrl(endpoint), { headers });
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);

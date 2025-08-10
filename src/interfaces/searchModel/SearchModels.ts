@@ -1,9 +1,9 @@
 export interface SearchModel {
-    id: string;
-    orderColumn: string;
-    orderDirection: string;
-    page: number;
-    pageSize: number;
+    id?: string;
+    orderColumn?: string;
+    orderDirection?: string;
+    page?: number;
+    pageSize?: number;
 }
 
 export interface SMUsers extends SearchModel {
@@ -14,6 +14,7 @@ export interface SMOrders extends SearchModel {
     search?: string;
     startDate?: string;
     endDate?: string;
+    active?: boolean;
 }
 
 

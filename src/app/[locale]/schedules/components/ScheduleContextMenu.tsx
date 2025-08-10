@@ -3,11 +3,12 @@ import { useOrders } from '@/providers/orders/OrdersProvider';
 import { MoreVertical } from 'lucide-react';
 import React, { useCallback } from 'react'
 import { useTranslations } from 'next-intl';
+import WithPermissions from './../../../../components/shared/WithPermissions';
 
 const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
     const t = useTranslations();
     const router = useRouter();
-    const { setOpenMenuId, openMenuId, downloadASNFile } = useOrders();
+    const { setOpenMenuId, openMenuId, cancelOrder } = useOrders();
 
     const handleAction = useCallback((action: string, id: number) => {
         switch (action) {
@@ -109,6 +110,14 @@ const ScheduleContextMenu = ({ order, buttonRef, menuRef }: any) => {
                         >
                             {t('generateASN')}
                         </button>
+                        <WithPermissions permissions={['Administrador']}>
+                            <button
+                                className="px-4 py-2 text-sm text-red-500 hover:bg-red-100 text-left"
+                                onClick={() => cancelOrder(order.id!)}
+                            >
+                                {t('cancelOrder')}
+                            </button>
+                        </WithPermissions>
                     </div>
                 </div>
             )}

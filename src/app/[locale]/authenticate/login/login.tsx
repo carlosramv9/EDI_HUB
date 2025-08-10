@@ -43,7 +43,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   const processData = handleSubmit(async (data) => {
-    console.log('data', data);
     const { username, password } = data
 
     await login(username, password);
