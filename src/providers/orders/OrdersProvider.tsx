@@ -139,6 +139,7 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
 
     const uploadFiles = async (files: File[]) => {
         dispatch(getOrders());
+        const loading = toast.loading('Uploading schedules...');
         try {
             await ordersApi.UploadSchedules(files);
 
@@ -149,6 +150,8 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         } catch (error) {
             console.error(error);
             toast.error('Failed to upload schedules');
+        } finally {
+            toast.dismiss(loading);
         }
     }
 
