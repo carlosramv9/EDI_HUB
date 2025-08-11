@@ -78,6 +78,12 @@
       "title": "Settings",
       "profile": "Profile",
       "preferences": "Preferences"
+    },
+    "edi": {
+      "title": "EDI"
+    },
+    "processed": {
+      "title": "Processed"
     }
   },
   "scheduleTitle": "Shipping Schedule",
@@ -107,11 +113,20 @@
   "Main": "Main",
   "dashboard": "Dashboard",
   "schedules": "Schedules",
+  "asnProcessed": "Processed ASN",
   "labels": "Labels",
   "masterPackingLabel": "Master Packing Label",
   "shippingLabel": "Shipping Label",
   "users": "Users",
   "roles": "Roles",
   "schedulesSent": "Schedules Sent",
-  "cancelOrder": "Cancel Order"
+  "cancelOrder": "Cancel Order",
+  "asnProcessedTitle": "Processed ASN",
+  "dateProcessed": "Processed Date",
+  "typeSend": "Send Type",
+  "statusSend": "Send Status",
+  "createdBy": "Created By",
+  "createdAt": "Created At",
+  "downloadASN": "Download ASN",
+  "viewDetails": "View Details"
 }

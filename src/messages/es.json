@@ -78,6 +78,12 @@
       "title": "Configuración",
       "profile": "Perfil",
       "preferences": "Preferencias"
+    },
+    "edi": {
+      "title": "EDI"
+    },
+    "processed": {
+      "title": "Procesados"
     }
   },
   "scheduleTitle": "Programación de Envíos",
@@ -108,6 +114,7 @@
   "Main": "Principal",
   "dashboard": "Panel de Control",
   "schedules": "Programación",
+  "asnProcessed": "ASN Procesados",
   "labels": "Etiquetas",
   "masterPackingLabel": "Etiqueta Master Packing",
   "shippingLabel": "",
@@ -115,5 +122,13 @@
   "users": "Usuarios",
   "roles": "Roles",
   "schedulesSent": "Programaciones Enviadas",
-  "cancelOrder": "Cancelar Orden"
+  "cancelOrder": "Cancelar Orden",
+  "asnProcessedTitle": "ASN Procesados",
+  "dateProcessed": "Fecha Procesado",
+  "typeSend": "Tipo de Envío",
+  "statusSend": "Estado de Envío",
+  "createdBy": "Creado Por",
+  "createdAt": "Fecha de Creación",
+  "downloadASN": "Descargar ASN",
+  "viewDetails": "Ver Detalles"
 }

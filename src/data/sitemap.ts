@@ -1,5 +1,5 @@
 import { IconDefinition, IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faCalendar, faDashboard, faFileAlt, faLock, faPaperPlane, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faDashboard, faFileAlt, faLock, faPaperPlane, faUser, faUsers, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 export type Sitemap = {
     name: string;
@@ -46,6 +46,12 @@ export const routes: Sitemap[] = [
                 name: 'schedules',
                 path: '/schedules',
                 icon: faCalendar,
+                isVisible: true,
+            },
+            {
+                name: 'asnProcessed',
+                path: '/edi/processed',
+                icon: faCheckCircle,
                 isVisible: true,
             }
         ]

@@ -18,3 +18,9 @@ export interface SMOrders extends SearchModel {
 }
 
 
+export interface SMASNProcessed extends SearchModel {
+    search?: string;
+    startDate?: string;
+    endDate?: string;
+    active?: boolean;
+}
