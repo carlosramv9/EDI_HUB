@@ -14,7 +14,7 @@ interface ASNProcessedContextMenuProps {
 
 const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContextMenuProps) => {
     const t = useTranslations();
-    const { setOpenMenuId, openMenuId, downloadASN } = useASNProcessed();
+    const { setOpenMenuId, openMenuId, downloadASN, reactivateASN, searchModel } = useASNProcessed();
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [mounted, setMounted] = useState(false);
 
@@ -30,6 +30,9 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
             case 'view':
                 // Aquí podrías implementar una vista detallada del ASN
                 console.log('Ver detalles del ASN:', asnData);
+                break;
+            case 'reactivate':
+                reactivateASN(asnData, searchModel || {});
                 break;
             default:
                 break;
@@ -47,19 +50,19 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
             const buttonRect = buttonRef.current.getBoundingClientRect();
             const viewportWidth = window.innerWidth;
             const viewportHeight = window.innerHeight;
-            
+
             let top = buttonRect.bottom + 5;
             let left = buttonRect.left;
-            
+
             // Adjust if menu would go off-screen
             if (left + 200 > viewportWidth) {
                 left = buttonRect.right - 200;
             }
-            
+
             if (top + 100 > viewportHeight) {
                 top = buttonRect.top - 100;
             }
-            
+
             setMenuPosition({ top, left });
         }
     }, [openMenuId, asn.id, buttonRef]);
@@ -79,6 +82,12 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                     onClick={() => handleAction('download', asn)}
                 >
                     {t('downloadASN')}
+                </button>
+                <button
+                    className="px-4 py-2 text-sm text-green-700 hover:bg-green-100 text-left whitespace-nowrap"
+                    onClick={() => handleAction('reactivate', asn)}
+                >
+                    {t('re-send')}
                 </button>
                 <button
                     className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left whitespace-nowrap"

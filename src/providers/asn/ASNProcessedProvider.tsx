@@ -4,6 +4,7 @@ import { SMASNProcessed } from "@/interfaces/searchModel/SearchModels";
 import { BaseService, BaseServiceResponseArray } from "@/services/api/BaseService";
 import dayjs from "dayjs";
 import { createContext, useContext, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 interface IASNProcessedProviderProps {
     children: React.ReactNode;
@@ -18,7 +19,8 @@ interface IASNProcessedContext {
     setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
     searchModel: SMASNProcessed | null;
     setSearchModel: React.Dispatch<React.SetStateAction<SMASNProcessed | null>>;
-    total: number;
+    total: number;  
+    reactivateASN: (asn: IASNProcessed, sm: SMASNProcessed) => Promise<void>;
 }
 
 const ASNProcessedContext = createContext<IASNProcessedContext | null>(null);
@@ -60,13 +62,27 @@ const ASNProcessedProvider = ({ children }: IASNProcessedProviderProps) => {
         window.URL.revokeObjectURL(url);
     };
 
+    const reactivateASN = async (asn: IASNProcessed, sm: SMASNProcessed) => {
+        try {
+            await service.update<IASNProcessed>({ id: asn.id, endpoint: 'activate', data: asn });
+            const response = await service.post<BaseServiceResponseArray<IASNProcessed>>({ endpoint: 'list', data: sm });
+            setASNProcessed(response.data || []);
+            setTotal(response.total || 0);
+
+            toast.success('Envio en cola.');
+        } catch (error) {
+            toast.error('Error al reactivar la ASN');
+        }
+    }
+
     const value = useMemo(() => ({
         asnProcessed, setASNProcessed,
         getASNProcessed, downloadASN,
         openMenuId, setOpenMenuId,
         searchModel, setSearchModel,
-        total
-    }), [asnProcessed, openMenuId, searchModel, total]);
+        total,
+        reactivateASN
+    }), [asnProcessed, openMenuId, searchModel, total, reactivateASN]);
 
     return (
         <ASNProcessedContext.Provider value={value}>
