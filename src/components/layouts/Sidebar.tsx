@@ -41,7 +41,6 @@ export default function Sidebar() {
     routes.forEach(item => {
       item.children?.forEach(child => {
         if (child.isVisible && child.name) {
-          console.log(child.name)
           divRefs.current[child.name] = divRefs.current[child.name] || createRef();
         }
       })

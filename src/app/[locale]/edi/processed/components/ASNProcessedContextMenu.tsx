@@ -83,12 +83,14 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 >
                     {t('downloadASN')}
                 </button>
-                <button
-                    className="px-4 py-2 text-sm text-green-700 hover:bg-green-100 text-left whitespace-nowrap"
-                    onClick={() => handleAction('reactivate', asn)}
-                >
-                    {t('re-send')}
-                </button>
+                <WithPermissions permissions={['Administrador']}>
+                    <button
+                        className="px-4 py-2 text-sm text-green-700 hover:bg-green-100 text-left whitespace-nowrap"
+                        onClick={() => handleAction('reactivate', asn)}
+                    >
+                        {t('re-send')}
+                    </button>
+                </WithPermissions>
                 <button
                     className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left whitespace-nowrap"
                     onClick={() => handleAction('view', asn)}
