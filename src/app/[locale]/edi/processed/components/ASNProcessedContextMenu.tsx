@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import WithPermissions from '@/components/shared/WithPermissions';
 import { IASNProcessed } from '@/interfaces/asn/IASNProcessed';
 import { createPortal } from 'react-dom';
+import ASNDetailsModal from './ASNDetailsModal';
 
 interface ASNProcessedContextMenuProps {
     asn: IASNProcessed;
@@ -17,6 +18,7 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
     const { setOpenMenuId, openMenuId, downloadASN, reactivateASN, searchModel } = useASNProcessed();
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [mounted, setMounted] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -28,8 +30,7 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 downloadASN(asnData);
                 break;
             case 'view':
-                // Aquí podrías implementar una vista detallada del ASN
-                console.log('Ver detalles del ASN:', asnData);
+                setShowDetailsModal(true);
                 break;
             case 'reactivate':
                 reactivateASN(asnData, searchModel || {});
@@ -38,7 +39,7 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 break;
         }
         setOpenMenuId(null);
-    }, [downloadASN, setOpenMenuId]);
+    }, [downloadASN, reactivateASN, searchModel, setOpenMenuId]);
 
     const toggleMenu = useCallback((id: number) => {
         setOpenMenuId(openMenuId === id ? null : id);
@@ -111,6 +112,13 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 <MoreVertical className="h-4 w-4 text-gray-500" />
             </button>
             {mounted && menu && createPortal(menu, document.body)}
+            
+            {/* ASN Details Modal */}
+            <ASNDetailsModal 
+                asn={asn}
+                open={showDetailsModal}
+                onOpenChange={setShowDetailsModal}
+            />
         </>
     )
 }

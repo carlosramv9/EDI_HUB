@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useState, useEffect, useRef, createRef, createContext, useContext } from "react"
 import Link from "next/link"
 import Image from 'next/image'
@@ -220,11 +220,12 @@ export default function Sidebar() {
           )}>
             {/* {collapsed && <div className="mb-2 text-xs font-semibold text-gray-500 text-center">MAIN</div>} */}
             <nav className="space-y-5">
-              {routes.map((item) => (<>
-                {!collapsed && <div className="text-[11px] font-bold text-white/75 uppercase mb-1">{safeT(item.name)}</div>}
-                <div className="space-y-1">
-                  {item.children?.map((child) => (
-                    <div>
+              {routes.map((item) => (
+                <React.Fragment key={item.name}>
+                  {!collapsed && <div className="text-[11px] font-bold text-white/75 uppercase mb-1">{safeT(item.name)}</div>}
+                  <div className="space-y-1">
+                    {item.children?.map((child) => (
+                      <div key={child.name}>
                       <Link href={child.path || '#'} key={child.name} className="relative group mb-1" passHref>
                         {/* Main nav item */}
                         <div
@@ -280,8 +281,8 @@ export default function Sidebar() {
                       </Link>
                     </div>
                   ))}
-                </div>
-              </>
+                  </div>
+                </React.Fragment>
               ))}
             </nav>
           </div>

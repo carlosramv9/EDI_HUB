@@ -81,6 +81,7 @@ const ASNForm = () => {
 
         if (data.id) await update({ ...advanceShippingNotice, ...data, orderId: Number(id) });
         else await save({ ...data, orderId: Number(id) });
+        router.push(`/schedules`);
     };
 
     if (loading) return <Loader />;
@@ -269,7 +270,7 @@ const ASNForm = () => {
                         type="submit"
                         className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                     >
-                        Enviar ASN
+                        Guardar y Enviar ASN
                     </button>
                 </div>
             </form>

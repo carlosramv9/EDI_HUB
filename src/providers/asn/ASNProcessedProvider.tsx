@@ -33,7 +33,7 @@ const ASNProcessedProvider = ({ children }: IASNProcessedProviderProps) => {
     const service = new BaseService<IASNProcessed>('ASNProcessed');
 
     const getASNProcessed = async (sm: SMASNProcessed) => {
-        const response = await service.post<BaseServiceResponseArray<IASNProcessed>>({ endpoint: 'list', data: sm });
+        const response = await service.post<BaseServiceResponseArray<IASNProcessed>>({ endpoint: 'details', data: sm });
         setASNProcessed(response.data || []);
         setTotal(response.total || 0);
     }
