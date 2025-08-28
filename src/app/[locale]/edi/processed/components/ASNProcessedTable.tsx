@@ -130,7 +130,7 @@ const ASNProcessedTable = () => {
                                         <TableRow
                                             key={asn.id}
                                         >
-                                            <WithPermissions permissions={['Administrador']}>
+                                            <WithPermissions permissions={['Administrador', 'Proveedor']}>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white relative">
                                                     <ASNProcessedContextMenu asn={asn} buttonRef={buttonRef} menuRef={menuRef} />
                                                 </TableCell>
