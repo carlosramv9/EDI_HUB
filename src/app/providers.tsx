@@ -2,13 +2,16 @@
 
 import { SidebarProvider } from '@/context/SidebarContext'
 import ConfigurationProvider from '@/providers/configuration/ConfigurationProvider'
+import FilterProvider from '@/providers/filters/FilterProvider'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ConfigurationProvider>
-      <SidebarProvider>
-        {children}
-      </SidebarProvider>
+      <FilterProvider>
+        <SidebarProvider>
+          {children}
+        </SidebarProvider>
+      </FilterProvider>
     </ConfigurationProvider>
   )
 } 

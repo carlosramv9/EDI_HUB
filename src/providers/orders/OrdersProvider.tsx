@@ -27,7 +27,7 @@ interface OrdersProps<T> {
     searchModel: SMOrders | undefined;
     setSearchModel: (searchModel: SMOrders | undefined) => void;
     handleSubmit: UseFormHandleSubmit<IOrder>;
-    getOrdersList: (sm?: SMOrders) => Promise<void>;
+    getOrdersList: (sm: SMOrders) => Promise<void>;
     getOrderById: (id: string) => Promise<void>;
     createOrder: (order: IOrder) => Promise<void>;
     updateOrder: (order: IOrder) => Promise<void>;
@@ -91,7 +91,13 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         }
     });
 
-    const getOrdersList = async (sm?: SMOrders) => {
+    const getOrdersList = async (sm: SMOrders) => {
+
+        // if (!sm.startDate && !sm.endDate) {
+        //     sm.startDate = dayjs().startOf('week').format('YYYY-MM-DD');
+        //     sm.endDate = dayjs().endOf('week').format('YYYY-MM-DD');
+        // }
+        
         dispatch(getOrders());
         try {
             const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: { ...searchModel, ...sm } as SMOrders });

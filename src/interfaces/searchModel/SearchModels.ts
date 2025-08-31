@@ -15,6 +15,7 @@ export interface SMOrders extends SearchModel {
     startDate?: string;
     endDate?: string;
     active?: boolean;
+    onlyPending?: boolean;
 }
 
 

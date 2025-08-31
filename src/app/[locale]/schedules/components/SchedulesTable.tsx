@@ -29,57 +29,98 @@ import { DateRange } from 'react-day-picker';
 import dayjs from 'dayjs';
 import WithPermissions from '@/components/shared/WithPermissions';
 import { SMOrders } from '@/interfaces/searchModel/SearchModels';
+import { useFilter } from '@/providers/filters/FilterProvider';
 
 const SchedulesTable = () => {
+    const searchModel = useAppSelector((state) => state.filters.schedules) as SMOrders;
     const orders = useAppSelector((state) => state.orders.list);
     const total = useAppSelector((state) => state.orders.total);
     const loading = useAppSelector((state) => state.orders.loading);
-    const { getOrdersList, setOpenMenuId, setSearchModel, searchModel } = useOrders();
-    const [search, setSearch] = useState('');
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: dayjs().startOf('week').toDate(),
-        to: dayjs().endOf('week').toDate()
+    const { getOrdersList, setOpenMenuId } = useOrders();
+    
+    // Inicializar desde el slice si existe, sino usar valores por defecto
+    const [search, setSearch] = useState(searchModel?.search || '');
+    const [date, setDate] = useState<DateRange | undefined>(() => {
+        if (searchModel?.startDate && searchModel?.endDate) {
+            return {
+                from: dayjs(searchModel.startDate).toDate(),
+                to: dayjs(searchModel.endDate).toDate()
+            };
+        }
+        return {
+            from: dayjs().startOf('week').toDate(),
+            to: dayjs().endOf('week').toDate()
+        };
     });
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const t = useTranslations();
     const { setViewTitle } = useConfiguration();
+    const { setFilters } = useFilter();
 
+    // Efecto para la carga inicial - solo se ejecuta una vez
     useEffect(() => {
         if (searchModel) {
-            getOrdersList();
+            getOrdersList(searchModel);
+        }
+    }, [searchModel]);
+
+    // Sincronizar estados locales cuando cambie el searchModel desde el slice
+    useEffect(() => {
+        if (searchModel) {
+            if (searchModel.search !== undefined && searchModel.search !== search) {
+                setSearch(searchModel.search);
+            }
+            if (searchModel.startDate && searchModel.endDate) {
+                const newDate = {
+                    from: dayjs(searchModel.startDate).toDate(),
+                    to: dayjs(searchModel.endDate).toDate()
+                };
+                if (JSON.stringify(newDate) !== JSON.stringify(date)) {
+                    setDate(newDate);
+                }
+            }
         }
     }, [searchModel]);
 
     useEffect(() => {
-        if (search || date) {
+        // Solo ejecutar si ya se hizo la carga inicial y hay cambios en los filtros
+        if ((search || date)) {
             const timer = setTimeout(() => {
                 var sm = {
                     ...searchModel,
                     orderColumn: 'id',
                     orderDirection: 'desc',
+                    page: 1, // Resetear a página 1 cuando cambien los filtros
                     search: search,
                     startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
                     endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
-                    active: true
+                    active: true,
+                    onlyPending: true
                 };
-                setSearchModel(sm);
+                setFilters('schedules', sm);
+                // Hacer la consulta inmediatamente después de actualizar los filtros
+                // getOrdersList(sm);
             }, 500);
             return () => clearTimeout(timer);
         }
     }, [search, date]);
 
     useEffect(() => {
-        const sm: SMOrders = {
-            orderColumn: 'id',
-            orderDirection: 'desc',
-            page: 1,
-            pageSize: 10,
-            startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
-            endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
-            active: true
+        // Solo inicializar si no hay filtros guardados en el slice
+        if (!searchModel || Object.keys(searchModel).length === 0) {
+            const sm: SMOrders = {
+                orderColumn: 'id',
+                orderDirection: 'desc',
+                page: 1,
+                pageSize: 10,
+                startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
+                endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
+                active: true,
+                onlyPending: true
+            }
+            setFilters('schedules', sm);
         }
-        setSearchModel(sm);
 
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current &&
@@ -96,6 +137,12 @@ const SchedulesTable = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const setSearchModel = (sm: SMOrders) => {
+        setFilters('schedules', sm);
+        // Hacer la consulta para cambios de paginación
+        getOrdersList(sm);
+    }
 
     return (
         <TableProvider>
