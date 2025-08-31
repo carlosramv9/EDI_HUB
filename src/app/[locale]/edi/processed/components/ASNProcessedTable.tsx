@@ -136,7 +136,7 @@ const ASNProcessedTable = () => {
                                                 </TableCell>
                                             </WithPermissions>
                                             <TableCell>{asn.asnNumber}</TableCell>
-                                            <TableCell>{asn.orderNumber}</TableCell>
+                                            <TableCell>{asn.devOrderNumber}</TableCell>
                                             <TableCell>{formatDate(asn.dateProcessed || '')}</TableCell>
                                             <TableCell>{asn.typeSendName}</TableCell>
                                             <TableCell>

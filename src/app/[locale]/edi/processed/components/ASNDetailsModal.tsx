@@ -54,7 +54,7 @@ const ASNDetailsModal = ({ asn, open, onOpenChange }: ASNDetailsModalProps) => {
                                     {t('orderNumber')}
                                 </label>
                                 <p className="text-sm text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 p-2 rounded">
-                                    {asn.orderNumber || 'N/A'}
+                                    {asn.devOrderNumber || 'N/A'}
                                 </p>
                             </div>
                         </div>
