@@ -113,9 +113,7 @@ const ASNProcessedTable = () => {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <WithPermissions permissions={['Administrador']}>
-                                            <TableHead></TableHead>
-                                        </WithPermissions>
+                                        <TableHead></TableHead>
                                         <TableHead>{t('asnNumber')}</TableHead>
                                         <TableHead>{t('orderNumber')}</TableHead>
                                         <TableHead>{t('dateProcessed')}</TableHead>
@@ -130,21 +128,18 @@ const ASNProcessedTable = () => {
                                         <TableRow
                                             key={asn.id}
                                         >
-                                            <WithPermissions permissions={['Administrador', 'Proveedor']}>
-                                                <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white relative">
-                                                    <ASNProcessedContextMenu asn={asn} buttonRef={buttonRef} menuRef={menuRef} />
-                                                </TableCell>
-                                            </WithPermissions>
+                                            <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white relative">
+                                                <ASNProcessedContextMenu asn={asn} buttonRef={buttonRef} menuRef={menuRef} />
+                                            </TableCell>
                                             <TableCell>{asn.asnNumber}</TableCell>
                                             <TableCell>{asn.devOrderNumber}</TableCell>
                                             <TableCell>{formatDate(asn.dateProcessed || '')}</TableCell>
                                             <TableCell>{asn.typeSendName}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                                    asn.statusSend === 1 
-                                                        ? 'bg-green-100 text-green-800' 
-                                                        : 'bg-red-100 text-red-800'
-                                                }`}>
+                                                <span className={`px-2 py-1 rounded-full text-xs ${asn.statusSend === 1
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800'
+                                                    }`}>
                                                     {asn.statusSend === 1 ? 'Enviado' : 'Pendiente'}
                                                 </span>
                                             </TableCell>
