@@ -16,10 +16,13 @@ import UploadFilesProvider, { useUploadFiles } from '@/providers/common/UploadFi
 import ScheduleForm from './ScheduleForm'
 import { cn } from '@/lib/utils'
 import { useOrders } from '@/providers/orders/OrdersProvider'
+import { useAppSelector } from '@/app/store'
+import { SMOrders } from '@/interfaces/searchModel/SearchModels'
 
 const ScheduleUploadModal = ({
     buttonClassName
 }: { buttonClassName?: string }) => {
+    const searchModel = useAppSelector((state) => state.filters.schedules) as SMOrders;
     const { showModal, setShowModal } = useScheduleContext();
     const { files, setFiles } = useUploadFiles()
     const { uploadFiles } = useOrders()
@@ -31,7 +34,7 @@ const ScheduleUploadModal = ({
     }, [showModal])
 
     const processUpload = async () => {
-        await uploadFiles(files)
+        await uploadFiles(files, searchModel)
         setShowModal(false)
     }
 

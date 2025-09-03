@@ -34,7 +34,7 @@ interface OrdersProps<T> {
     downloadASNFile: () => Promise<void>;
     openMenuId: number | null;
     setOpenMenuId: (id: number | null) => void;
-    uploadFiles: (files: File[]) => Promise<void>;
+    uploadFiles: (files: File[], sm: SMOrders) => Promise<void>;
     cancelOrder: (id: number) => Promise<void>;
 }
 
@@ -143,13 +143,13 @@ const OrdersProvider = ({ children }: OrdersProviderProps) => {
         }
     }
 
-    const uploadFiles = async (files: File[]) => {
+    const uploadFiles = async (files: File[], sm: SMOrders) => {
         dispatch(getOrders());
         const loading = toast.loading('Uploading schedules...');
         try {
             await ordersApi.UploadSchedules(files);
 
-            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: searchModel });
+            const orders = await ordersApi.post<BaseServiceResponseArray<IOrder>>({ endpoint: 'list', data: sm });
             dispatch(getOrdersSuccess({ data: orders.data, total: orders.total }));
 
             toast.success('Schedules uploaded successfully');

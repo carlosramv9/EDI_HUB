@@ -63,7 +63,7 @@ axiosInstance.interceptors.response.use(
                 const isProduction = process.env['NODE_ENV'] === 'production';
                 if (!window.location.pathname.includes('/authenticate/login')) {
                     if (isProduction)
-                        window.location.href = 'edihub/authenticate/login';
+                        window.location.href = '/authenticate/login';
                     else
                         window.location.href = '/authenticate/login';
                 }
