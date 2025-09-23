@@ -14,6 +14,14 @@ class SubaruApi extends BaseService<Record<any, any>> {
         }
         return response;
     }
+
+    downloadLabelByOrderId = async ({ endpoint = '', orderId }: BaseServiceParams & { orderId: number }): Promise<AxiosResponse<Blob>> => {
+        const response = await axiosInstance.get(this.buildUrl(endpoint, orderId), { responseType: 'blob' });
+        if (response.status !== 200) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        return response;
+    }
 }
 
 const apiSubaru = new SubaruApi();

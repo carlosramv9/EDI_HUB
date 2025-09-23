@@ -6,6 +6,7 @@ import WithPermissions from '@/components/shared/WithPermissions';
 import { IASNProcessed } from '@/interfaces/asn/IASNProcessed';
 import { createPortal } from 'react-dom';
 import ASNDetailsModal from './ASNDetailsModal';
+import { useManifestContext } from '@/providers/manifest/ManifestProvider';
 
 interface ASNProcessedContextMenuProps {
     asn: IASNProcessed;
@@ -16,6 +17,7 @@ interface ASNProcessedContextMenuProps {
 const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContextMenuProps) => {
     const t = useTranslations();
     const { setOpenMenuId, openMenuId, downloadASN, reactivateASN, searchModel } = useASNProcessed();
+    const { downloadManifestByOrderId } = useManifestContext();
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [mounted, setMounted] = useState(false);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -34,6 +36,9 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 break;
             case 'reactivate':
                 reactivateASN(asnData, searchModel || {});
+                break;
+            case 'manifestLabel':
+                downloadManifestByOrderId(asnData.orderId!);
                 break;
             default:
                 break;
@@ -84,6 +89,12 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 >
                     {t('downloadASN')}
                 </button>
+                <button
+                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left whitespace-nowrap"
+                    onClick={() => handleAction('manifestLabel', asn)}
+                >
+                    {t('printManifest')}
+                </button>
                 <WithPermissions permissions={['Administrador']}>
                     <button
                         className="px-4 py-2 text-sm text-green-700 hover:bg-green-100 text-left whitespace-nowrap"
@@ -112,9 +123,9 @@ const ASNProcessedContextMenu = ({ asn, buttonRef, menuRef }: ASNProcessedContex
                 <MoreVertical className="h-4 w-4 text-gray-500" />
             </button>
             {mounted && menu && createPortal(menu, document.body)}
-            
+
             {/* ASN Details Modal */}
-            <ASNDetailsModal 
+            <ASNDetailsModal
                 asn={asn}
                 open={showDetailsModal}
                 onOpenChange={setShowDetailsModal}

@@ -19,6 +19,7 @@ interface ManifestContext {
     getManifestByOrderId: (orderId: number) => Promise<void>;
     createManifest: (data: ManifestLabel) => Promise<void>;
     dowloadLabel: (data: ManifestLabel) => Promise<void>;
+    downloadManifestByOrderId: (orderId: number) => Promise<void>;
     //
     register: UseFormRegister<ManifestLabel>;
     handleSubmit: UseFormHandleSubmit<ManifestLabel>;
@@ -104,6 +105,30 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
         }
     }
 
+    const downloadManifestByOrderId = async (orderId: number) => {
+        try {
+            const response = await apiSubaru.downloadLabelByOrderId({
+                endpoint: `ManifestLabel/Order`,
+                orderId
+            });
+
+            const contentDisposition = response.headers['content-disposition'];
+            const fileName = contentDisposition
+                ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+                : 'manifest-label.pdf';
+
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+        } catch (error) {
+            toast.error('Error downloading Pallet Master');
+            console.log(error);
+        }
+    }
+
     const clearRegister = () => {
         setValue('partNumber', '');
         setValue('doNumber', '');
@@ -131,6 +156,7 @@ const ManifestProvider = ({ children }: ManifestProviderProps) => {
         getManifestByOrderId,
         createManifest,
         dowloadLabel,
+        downloadManifestByOrderId,
         register,
         handleSubmit,
         errors,

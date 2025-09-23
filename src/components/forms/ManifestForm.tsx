@@ -47,7 +47,6 @@ const ManifestForm = () => {
     }, [id])
 
     useEffect(() => {
-        console.log(orderData);
         setValue('partNumber', orderData?.partNumber);
         setValue('doNumber', orderData?.orderNumber);
         setValue('partName', orderData?.partName);
@@ -66,6 +65,9 @@ const ManifestForm = () => {
         setValue('mfgDate', dayjs(orderData?.shipDate).format('YYYY-MM-DD'));
         setValue('snp', orderData?.snp);
         setValue('orderId', orderData?.id);
+        setValue('pickupRoute', orderData?.pickupRoute);
+        setValue('transferRoute', orderData?.transferRoute);
+        setValue('mainRoute', orderData?.mainRoute);
     }, [orderData])
 
     useEffect(() => {
@@ -87,6 +89,9 @@ const ManifestForm = () => {
         setValue('mfgDate', dayjs(manifest?.mfgDate).format('YYYY-MM-DD'));
         setValue('snp', manifest?.snp);
         setValue('orderId', manifest?.orderId);
+        setValue('pickupRoute', manifest?.pickupRoute);
+        setValue('transferRoute', manifest?.transferRoute);
+        setValue('mainRoute', manifest?.mainRoute);
     }, [manifest])
 
     const processData = handleSubmit(async (data) => {
@@ -96,7 +101,7 @@ const ManifestForm = () => {
 
     const handleDownload = () => {
         const values = getValues();
-        dowloadLabel({...manifest, ...values});
+        dowloadLabel({ ...manifest, ...values });
     }
 
     if (loading) {
@@ -232,6 +237,23 @@ const ManifestForm = () => {
                                 </p>
                             )}
                         </div>
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Quantity Rack
+                            </label>
+                            <input
+                                type="number"
+                                className={inputClasses}
+                                placeholder="Quantity Rack"
+                                {...register('quantityRack', { required: { value: true, message: 'Quantity Rack is required' } })}
+                                aria-invalid={errors.quantityRack ? 'true' : 'false'}
+                            />
+                            {errors.quantityRack && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.quantityRack.message}
+                                </p>
+                            )}
+                        </div>
                     </div>
 
                     {/* Segunda columna */}
@@ -325,28 +347,62 @@ const ManifestForm = () => {
                                 </p>
                             )}
                         </div>
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Pickup Route
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Pickup Route"
+                                {...register('pickupRoute', { required: { value: true, message: 'Pickup Route is required' } })}
+                                aria-invalid={errors.pickupRoute ? 'true' : 'false'}
+                            />
+                            {errors.pickupRoute && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.pickupRoute.message}
+                                </p>
+                            )}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Transfer Route
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Transfer Route"
+                                {...register('transferRoute', { required: { value: true, message: 'Transfer Route is required' } })}
+                                aria-invalid={errors.transferRoute ? 'true' : 'false'}
+                            />
+                            {errors.transferRoute && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.transferRoute.message}
+                                </p>
+                            )}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className={labelClasses}>
+                                Main Route
+                            </label>
+                            <input
+                                type="text"
+                                className={inputClasses}
+                                placeholder="Main Route"
+                                {...register('mainRoute', { required: { value: true, message: 'Main Route is required' } })}
+                                aria-invalid={errors.mainRoute ? 'true' : 'false'}
+                            />
+                            {errors.mainRoute && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {errors.mainRoute.message}
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Total Pallets Range */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-                    <div className="flex flex-col">
-                        <label className={labelClasses}>
-                            Quantity Rack
-                        </label>
-                        <input
-                            type="number"
-                            className={inputClasses}
-                            placeholder="Quantity Rack"
-                            {...register('quantityRack', { required: { value: true, message: 'Quantity Rack is required' } })}
-                            aria-invalid={errors.quantityRack ? 'true' : 'false'}
-                        />
-                        {errors.quantityRack && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.quantityRack.message}
-                            </p>
-                        )}
-                    </div>
                 </div>
 
                 {/* Botones */}

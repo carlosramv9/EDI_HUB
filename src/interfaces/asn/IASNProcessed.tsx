@@ -27,4 +27,5 @@ export interface IASNProcessed {
     lineCount?: number;
     createdAt?: string;
     updatedAt?: string;
+    orderId?: number;
 }

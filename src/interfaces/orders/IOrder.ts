@@ -16,6 +16,8 @@ export interface IOrder {
     fitLocation?: string;
     ecs?: string;
     pickupRoute?: string;
+    transferRoute?: string;
+    mainRoute?: string;
     kanban?: string;
     lineDeliveryCycle?: string;
     whLocationCode?: string;
