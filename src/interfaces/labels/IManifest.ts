@@ -28,4 +28,7 @@ export interface ManifestLabel extends BaseEntity {
     pickupRoute?: string;
     transferRoute?: string;
     mainRoute?: string;
+    datePickupRoute?: string;
+    dateTransferRoute?: string;
+    dateMainRoute?: string;
 }

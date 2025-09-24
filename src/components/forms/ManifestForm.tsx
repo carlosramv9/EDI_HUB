@@ -68,6 +68,9 @@ const ManifestForm = () => {
         setValue('pickupRoute', orderData?.pickupRoute);
         setValue('transferRoute', orderData?.transferRoute);
         setValue('mainRoute', orderData?.mainRoute);
+        setValue('datePickupRoute', orderData?.datePickupRoute);
+        setValue('dateTransferRoute', orderData?.dateTransferRoute);
+        setValue('dateMainRoute', orderData?.dateMainRoute);
     }, [orderData])
 
     useEffect(() => {
@@ -92,6 +95,9 @@ const ManifestForm = () => {
         setValue('pickupRoute', manifest?.pickupRoute);
         setValue('transferRoute', manifest?.transferRoute);
         setValue('mainRoute', manifest?.mainRoute);
+        setValue('datePickupRoute', manifest?.datePickupRoute);
+        setValue('dateTransferRoute', manifest?.dateTransferRoute);
+        setValue('dateMainRoute', manifest?.dateMainRoute);
     }, [manifest])
 
     const processData = handleSubmit(async (data) => {

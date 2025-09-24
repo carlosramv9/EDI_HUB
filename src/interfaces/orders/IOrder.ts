@@ -26,4 +26,7 @@ export interface IOrder {
     status?: boolean;
     createdAt?: string;
     updatedAt?: null;
+    datePickupRoute?: string;
+    dateTransferRoute?: string;
+    dateMainRoute?: string;
 }
