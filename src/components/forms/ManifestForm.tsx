@@ -68,9 +68,9 @@ const ManifestForm = () => {
         setValue('pickupRoute', orderData?.pickupRoute);
         setValue('transferRoute', orderData?.transferRoute);
         setValue('mainRoute', orderData?.mainRoute);
-        setValue('datePickupRoute', orderData?.datePickupRoute);
-        setValue('dateTransferRoute', orderData?.dateTransferRoute);
-        setValue('dateMainRoute', orderData?.dateMainRoute);
+        setValue('datePickupRoute', orderData?.datePickupRoute ? dayjs(orderData.datePickupRoute).format('YYYY-MM-DDTHH:mm') : '');
+        setValue('dateTransferRoute', orderData?.dateTransferRoute ? dayjs(orderData.dateTransferRoute).format('YYYY-MM-DDTHH:mm') : '');
+        setValue('dateMainRoute', orderData?.dateMainRoute ? dayjs(orderData.dateMainRoute).format('YYYY-MM-DDTHH:mm') : '');
     }, [orderData])
 
     useEffect(() => {
@@ -95,9 +95,9 @@ const ManifestForm = () => {
         setValue('pickupRoute', manifest?.pickupRoute);
         setValue('transferRoute', manifest?.transferRoute);
         setValue('mainRoute', manifest?.mainRoute);
-        setValue('datePickupRoute', manifest?.datePickupRoute);
-        setValue('dateTransferRoute', manifest?.dateTransferRoute);
-        setValue('dateMainRoute', manifest?.dateMainRoute);
+        setValue('datePickupRoute', manifest?.datePickupRoute ? dayjs(manifest.datePickupRoute).format('YYYY-MM-DDTHH:mm') : '');
+        setValue('dateTransferRoute', manifest?.dateTransferRoute ? dayjs(manifest.dateTransferRoute).format('YYYY-MM-DDTHH:mm') : '');
+        setValue('dateMainRoute', manifest?.dateMainRoute ? dayjs(manifest.dateMainRoute).format('YYYY-MM-DDTHH:mm') : '');
     }, [manifest])
 
     const processData = handleSubmit(async (data) => {
@@ -156,7 +156,6 @@ const ManifestForm = () => {
                             <input
                                 type="text"
                                 className={`${inputClasses} bg-gray-50`}
-                                // defaultValue="A361-01"
                                 {...register('doNumber', { required: { value: true, message: 'D/O # is required' } })}
                                 aria-invalid={errors.doNumber ? 'true' : 'false'}
                                 readOnly
@@ -170,7 +169,6 @@ const ManifestForm = () => {
                             <input
                                 type="text"
                                 className={`${inputClasses} bg-gray-50`}
-                                // defaultValue="A361-01"
                                 {...register('partName', { required: { value: true, message: 'Part Name is required' } })}
                                 aria-invalid={errors.partName ? 'true' : 'false'}
                                 readOnly
@@ -184,7 +182,6 @@ const ManifestForm = () => {
                             <input
                                 type="text"
                                 className={`${inputClasses} bg-gray-50`}
-                                // defaultValue="A361-01"
                                 {...register('supplierUse', { required: { value: true, message: 'Supplier Code is required' } })}
                                 aria-invalid={errors.supplierUse ? 'true' : 'false'}
                                 readOnly
@@ -243,6 +240,7 @@ const ManifestForm = () => {
                                 </p>
                             )}
                         </div>
+
                         <div className="flex flex-col">
                             <label className={labelClasses}>
                                 Quantity Rack
@@ -260,10 +258,7 @@ const ManifestForm = () => {
                                 </p>
                             )}
                         </div>
-                    </div>
 
-                    {/* Segunda columna */}
-                    <div className="space-y-5">
                         <div className="flex flex-col">
                             <label className={labelClasses}>
                                 Kanban
@@ -299,7 +294,10 @@ const ManifestForm = () => {
                                 </p>
                             )}
                         </div>
+                    </div>
 
+                    {/* Segunda columna */}
+                    <div className="space-y-5">
                         <div className="flex flex-col">
                             <label className={labelClasses}>
                                 Order Code
@@ -353,56 +351,117 @@ const ManifestForm = () => {
                                 </p>
                             )}
                         </div>
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Pickup Route
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                placeholder="Pickup Route"
-                                {...register('pickupRoute', { required: { value: true, message: 'Pickup Route is required' } })}
-                                aria-invalid={errors.pickupRoute ? 'true' : 'false'}
-                            />
-                            {errors.pickupRoute && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.pickupRoute.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Transfer Route
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                placeholder="Transfer Route"
-                                {...register('transferRoute', { required: { value: true, message: 'Transfer Route is required' } })}
-                                aria-invalid={errors.transferRoute ? 'true' : 'false'}
-                            />
-                            {errors.transferRoute && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.transferRoute.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className={labelClasses}>
-                                Main Route
-                            </label>
-                            <input
-                                type="text"
-                                className={inputClasses}
-                                placeholder="Main Route"
-                                {...register('mainRoute', { required: { value: true, message: 'Main Route is required' } })}
-                                aria-invalid={errors.mainRoute ? 'true' : 'false'}
-                            />
-                            {errors.mainRoute && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.mainRoute.message}
-                                </p>
-                            )}
+
+                        {/* Routes Section */}
+                        <div className="border-t pt-4">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Routes Information</h3>
+                            
+                            <div className="space-y-4">
+                                <div className="flex flex-col">
+                                    <label className={labelClasses}>
+                                        Pickup Route
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className={inputClasses}
+                                        placeholder="Pickup Route"
+                                        {...register('pickupRoute', { required: { value: true, message: 'Pickup Route is required' } })}
+                                        aria-invalid={errors.pickupRoute ? 'true' : 'false'}
+                                    />
+                                    {errors.pickupRoute && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.pickupRoute.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className={labelClasses}>
+                                        Date Pickup Route
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        className={inputClasses}
+                                        {...register('datePickupRoute')}
+                                        aria-invalid={errors.datePickupRoute ? 'true' : 'false'}
+                                    />
+                                    {errors.datePickupRoute && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.datePickupRoute.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className={labelClasses}>
+                                        Transfer Route
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className={inputClasses}
+                                        placeholder="Transfer Route"
+                                        {...register('transferRoute', { required: { value: true, message: 'Transfer Route is required' } })}
+                                        aria-invalid={errors.transferRoute ? 'true' : 'false'}
+                                    />
+                                    {errors.transferRoute && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.transferRoute.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className={labelClasses}>
+                                        Date Transfer Route
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        className={inputClasses}
+                                        {...register('dateTransferRoute')}
+                                        aria-invalid={errors.dateTransferRoute ? 'true' : 'false'}
+                                    />
+                                    {errors.dateTransferRoute && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.dateTransferRoute.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className={labelClasses}>
+                                        Main Route
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className={inputClasses}
+                                        placeholder="Main Route"
+                                        {...register('mainRoute', { required: { value: true, message: 'Main Route is required' } })}
+                                        aria-invalid={errors.mainRoute ? 'true' : 'false'}
+                                    />
+                                    {errors.mainRoute && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.mainRoute.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className={labelClasses}>
+                                        Date Main Route
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        className={inputClasses}
+                                        {...register('dateMainRoute')}
+                                        aria-invalid={errors.dateMainRoute ? 'true' : 'false'}
+                                    />
+                                    {errors.dateMainRoute && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.dateMainRoute.message}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
