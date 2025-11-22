@@ -18,7 +18,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { IASNProcessed } from '@/interfaces/asn/IASNProcessed';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/card';
 import { DatePickerWithRange } from '@/components/shared/DatePickerRange';
 import { DateRange } from 'react-day-picker';
