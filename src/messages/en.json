@@ -155,5 +155,6 @@
   "Received": "Received",
   "Processed": "Processed",
   "Rejected": "Rejected",
-  "Answered": "Answered"
+  "Answered": "Answered",
+  "selectedOrders": "Selected Orders"
 }

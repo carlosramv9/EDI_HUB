@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useOrders } from '@/providers/orders/OrdersProvider';
 import { formatDate } from '@/helpers/dateHelper';
 import { useTranslations } from 'next-intl';
@@ -8,7 +8,6 @@ import { useConfiguration } from '@/providers/configuration/ConfigurationProvide
 import { useAppSelector } from '@/app/store';
 import { useDispatch } from 'react-redux';
 import Loader from '@/components/ui/Loader';
-import classNames from 'classnames';
 import PaginationSimple from '@/components/shared/PaginationSimple';
 import TableProvider, { TableContextProps, useTable, useTableContext } from '@/providers/TableProvider';
 import ScheduleUploadModal from './ScheduleUploadModal';
@@ -31,7 +30,7 @@ import dayjs from 'dayjs';
 import WithPermissions from '@/components/shared/WithPermissions';
 import { SMOrders } from '@/interfaces/searchModel/SearchModels';
 import { useFilter } from '@/providers/filters/FilterProvider';
-import { toggleSelectionMode, toggleOrderSelection, selectAllOrders, clearSelectedOrders } from '@/store/features/selectedOrders/selectedOrdersSlice';
+import { toggleOrderSelection, selectAllOrders, clearSelectedOrders } from '@/store/features/selectedOrders/selectedOrdersSlice';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const SchedulesTable = () => {
@@ -40,10 +39,9 @@ const SchedulesTable = () => {
     const orders = useAppSelector((state) => state.orders.list);
     const total = useAppSelector((state) => state.orders.total);
     const loading = useAppSelector((state) => state.orders.loading);
-    const selectionMode = useAppSelector((state) => state.selectedOrders.selectionMode);
     const selectedOrders = useAppSelector((state) => state.selectedOrders.selectedOrders);
     const { getOrdersList, setOpenMenuId } = useOrders();
-    
+
     // Inicializar desde el slice si existe, sino usar valores por defecto
     const [search, setSearch] = useState(searchModel?.search || '');
     const [date, setDate] = useState<DateRange | undefined>(() => {
@@ -150,10 +148,6 @@ const SchedulesTable = () => {
         getOrdersList(sm);
     }
 
-    const handleToggleSelectionMode = () => {
-        dispatch(toggleSelectionMode());
-    };
-
     const handleOrderSelection = (order: IOrder) => {
         dispatch(toggleOrderSelection(order));
     };
@@ -182,31 +176,6 @@ const SchedulesTable = () => {
                             <WithPermissions permissions={['Proveedor', 'Administrador']}>
                                 <ScheduleUploadModal buttonClassName="px-3 py-2 rounded-md flex gap-2 items-center hover:cursor-pointer bg-blue-500 hover:bg-blue-600 hover:text-white text-white text-sm" />
                             </WithPermissions>
-                            <button
-                                onClick={handleToggleSelectionMode}
-                                className={classNames(
-                                    "px-3 py-2 rounded-md flex gap-2 items-center hover:cursor-pointer text-sm transition-colors",
-                                    selectionMode 
-                                        ? "bg-green-500 hover:bg-green-600 text-white" 
-                                        : "bg-gray-200 hover:bg-gray-300 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
-                                )}
-                            >
-                                <svg 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    className="h-4 w-4" 
-                                    fill="none" 
-                                    viewBox="0 0 24 24" 
-                                    stroke="currentColor"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                {selectionMode ? t('selectionModeActive') || 'Modo Selección' : t('enableSelection') || 'Habilitar Selección'}
-                                {selectedOrders.length > 0 && (
-                                    <span className="ml-1 bg-white text-green-600 rounded-full px-2 py-0.5 text-xs font-semibold">
-                                        {selectedOrders.length}
-                                    </span>
-                                )}
-                            </button>
                             <Input type="text" className="w-64" placeholder="Buscar (Orden, ASN, Parte, etc.)..." value={search} onChange={(e) => setSearch(e.target.value)} />
                             <DatePickerWithRange date={date} setDate={setDate} />
                             <div className="ml-auto">
@@ -215,22 +184,32 @@ const SchedulesTable = () => {
                         </div>
                     </CardContent>
                 </Card>
+                {selectedOrders.length > 0 && (
+                    <Card>
+                        <CardContent className="px-5 py-2">
+                            <div className="px-3 py-2 rounded-md flex gap-2 items-center text-sm">
+                                <span>{t('selectedOrders') || 'Órdenes seleccionadas'}:</span>
+                                <span className="bg-white text-green-600 rounded-full px-2 py-0.5 font-semibold">
+                                    {selectedOrders.length}
+                                </span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
                 {loading ? <Loader /> : (
                     <Card>
                         <CardContent>
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        {selectionMode && (
-                                            <TableHead className="w-12">
-                                                <Checkbox
-                                                    checked={allSelected}
-                                                    onCheckedChange={handleSelectAll}
-                                                    aria-label="Seleccionar todas"
-                                                    className={someSelected ? "data-[state=checked]:bg-blue-500" : ""}
-                                                />
-                                            </TableHead>
-                                        )}
+                                        <TableHead className="w-12">
+                                            <Checkbox
+                                                checked={allSelected}
+                                                onCheckedChange={handleSelectAll}
+                                                aria-label="Seleccionar todas"
+                                                className={someSelected ? "data-[state=checked]:bg-blue-500" : ""}
+                                            />
+                                        </TableHead>
                                         <WithPermissions permissions={['Trafico', 'Administrador']}>
                                             <TableHead></TableHead>
                                         </WithPermissions>
@@ -250,15 +229,13 @@ const SchedulesTable = () => {
                                             key={order.id}
                                             className={isOrderSelected(order.id) ? "bg-blue-50 dark:bg-blue-900/20" : ""}
                                         >
-                                            {selectionMode && (
-                                                <TableCell className="w-12">
-                                                    <Checkbox
-                                                        checked={isOrderSelected(order.id)}
-                                                        onCheckedChange={() => handleOrderSelection(order)}
-                                                        aria-label={`Seleccionar orden ${order.orderNumber}`}
-                                                    />
-                                                </TableCell>
-                                            )}
+                                            <TableCell className="w-12">
+                                                <Checkbox
+                                                    checked={isOrderSelected(order.id)}
+                                                    onCheckedChange={() => handleOrderSelection(order)}
+                                                    aria-label={`Seleccionar orden ${order.orderNumber}`}
+                                                />
+                                            </TableCell>
                                             <WithPermissions permissions={['Trafico', 'Administrador']}>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white relative">
                                                     <ScheduleContextMenu order={order} buttonRef={buttonRef} menuRef={menuRef} />
