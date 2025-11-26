@@ -5,13 +5,13 @@ import { useOrders } from '@/providers/orders/OrdersProvider';
 import { formatDate } from '@/helpers/dateHelper';
 import { useTranslations } from 'next-intl';
 import { useConfiguration } from '@/providers/configuration/ConfigurationProvider';
-import { useAppSelector } from '@/app/store';
-import { useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '@/app/store';
 import Loader from '@/components/ui/Loader';
 import PaginationSimple from '@/components/shared/PaginationSimple';
 import TableProvider, { TableContextProps, useTable, useTableContext } from '@/providers/TableProvider';
 import ScheduleUploadModal from './ScheduleUploadModal';
 import ScheduleContextMenu from './ScheduleContextMenu';
+import { useRouter } from '@/navigation';
 import {
     Table,
     TableBody,
@@ -32,9 +32,10 @@ import { SMOrders } from '@/interfaces/searchModel/SearchModels';
 import { useFilter } from '@/providers/filters/FilterProvider';
 import { toggleOrderSelection, selectAllOrders, clearSelectedOrders } from '@/store/features/selectedOrders/selectedOrdersSlice';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/Button';
 
 const SchedulesTable = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const searchModel = useAppSelector((state) => state.filters.schedules) as SMOrders;
     const orders = useAppSelector((state) => state.orders.list);
     const total = useAppSelector((state) => state.orders.total);
@@ -59,6 +60,7 @@ const SchedulesTable = () => {
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const t = useTranslations();
+    const router = useRouter();
     const { setViewTitle } = useConfiguration();
     const { setFilters } = useFilter();
 
@@ -167,6 +169,12 @@ const SchedulesTable = () => {
     const allSelected = orders.length > 0 && selectedOrders.length === orders.length;
     const someSelected = selectedOrders.length > 0 && selectedOrders.length < orders.length;
 
+    const handleCreateShipment = () => {
+        if (selectedOrders.length > 1) {
+            router.push('/schedules/create-shipment');
+        }
+    };
+
     return (
         <TableProvider>
             <section className="flex flex-col gap-3">
@@ -187,11 +195,24 @@ const SchedulesTable = () => {
                 {selectedOrders.length > 0 && (
                     <Card>
                         <CardContent className="px-5 py-2">
-                            <div className="px-3 py-2 rounded-md flex gap-2 items-center text-sm">
-                                <span>{t('selectedOrders') || 'Órdenes seleccionadas'}:</span>
-                                <span className="bg-white text-green-600 rounded-full px-2 py-0.5 font-semibold">
-                                    {selectedOrders.length}
-                                </span>
+                            <div className="flex items-center justify-between">
+                                <div className="px-3 py-2 rounded-md flex gap-2 items-center text-sm">
+                                    <span>{t('selectedOrders') || 'Órdenes seleccionadas'}:</span>
+                                    <span className="bg-white text-green-600 rounded-full px-2 py-0.5 font-semibold">
+                                        {selectedOrders.length}
+                                    </span>
+                                </div>
+                                {selectedOrders.length > 1 && (
+                                    <Button
+                                        onClick={handleCreateShipment}
+                                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                        </svg>
+                                        {t('createShipment') || 'Crear Envío'}
+                                    </Button>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

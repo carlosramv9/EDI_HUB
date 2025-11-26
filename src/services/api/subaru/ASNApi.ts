@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import axiosInstance from "../axiosConfig";
 import { BaseService, BaseServiceParams } from "../BaseService";
+import { IAsnHeader } from "@/interfaces/asn/IAsnHeader";
 
 class ASNApi extends BaseService<Record<any, any>> {
     constructor() {
@@ -13,6 +14,14 @@ class ASNApi extends BaseService<Record<any, any>> {
             throw new Error(`Error: ${response.status}`);
         }
         return response;
+    }
+
+    uploadMultiShipping = async ({formData}: {formData: IAsnHeader}): Promise<void> => {
+        const response = await axiosInstance.post(this.buildUrl('Multi'), formData);
+        if (response.status !== 200) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        // return response;
     }
 }
 
