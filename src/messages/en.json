@@ -180,5 +180,17 @@
   "quantityPlaceholder": "Quantity",
   "devOrderNumberPlaceholder": "Order number",
   "engChangePlaceholder": "Engineering change",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "sending": "Sending...",
+  "sendShipment": "Send Shipment",
+  "send" : "Send",
+  "saveShipment": "Save Shipment",
+  "confirmSendTitle": "Confirm shipment?",
+  "confirmSendText": "You are about to send the shipment with {count} orders. This action cannot be undone.",
+  "confirmSendHtml": "You are about to send the shipment with <strong>{count} orders</strong>.<br/>This action cannot be undone.",
+  "confirmButton": "Yes, send it",
+  "cancelButton": "Cancel",
+  "sendSuccess": "Shipment sent successfully!",
+  "sendError": "Error sending shipment",
+  "sendCancelled": "Shipment cancelled"
 }

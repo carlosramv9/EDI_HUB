@@ -1,6 +1,7 @@
 'use client'
 
 import { useAppDispatch } from "@/app/store";
+import { IAdvanceShippingNotice } from "@/interfaces/asn/IAdvanceShippingNotice";
 import { BaseService } from "@/services/api/BaseService";
 import { apiASN } from "@/services/api/subaru/ASNApi";
 import { AxiosResponse } from "axios";
@@ -55,6 +56,33 @@ const ASNProvider = ({ children }: IAdvanceShippingNoticeProps) => {
     };
 
     const save = async (data: IAdvanceShippingNotice) => {
+        try {
+            const confirmation = await Swal.fire({
+                title: 'Save ASN',
+                text: 'This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            });
+
+            if (!confirmation.isConfirmed) {
+                return;
+            }
+            setLoading(true);
+
+            await api.post({ data });
+            toast.success('ASN saved successfully');
+        } catch (error) {
+            console.error('Error saving ASN:', error);
+            toast.error('Error saving ASN');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const saveMulti = async (data: IAdvanceShippingNotice) => {
         try {
             const confirmation = await Swal.fire({
                 title: 'Save ASN',

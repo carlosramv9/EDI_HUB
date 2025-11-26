@@ -18,6 +18,7 @@ import Loader from '@/components/ui/Loader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { apiASN } from '@/services/api/subaru/ASNApi'
+import Swal from 'sweetalert2'
 
 const CreateShipmentPage = () => {
     const dispatch = useAppDispatch()
@@ -124,6 +125,81 @@ const CreateShipmentPage = () => {
         } catch (error: any) {
             console.error('Error creating shipment:', error)
             toast.error(error?.message || 'Error al crear el envío')
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
+    const handleSendMultiShipping = async () => {
+        if (!validateForm() || !formData) {
+            console.log(errors)
+            toast.error('Por favor, complete todos los campos requeridos')
+            return
+        }
+
+        // Mostrar SweetAlert de confirmación
+        const result = await Swal.fire({
+            title: t('confirmSendTitle'),
+            text: t('confirmSendText', { count: selectedOrders.length }),
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#16a34a',
+            cancelButtonColor: '#dc2626',
+            confirmButtonText: t('confirmButton'),
+            cancelButtonText: t('cancelButton'),
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                popup: 'dark:bg-gray-800',
+                title: 'dark:text-white',
+                htmlContainer: 'dark:text-gray-300',
+                confirmButton: 'px-4 py-2 text-white font-medium rounded-lg',
+                cancelButton: 'px-4 py-2 text-white font-medium rounded-lg'
+            }
+        })
+
+        // Si el usuario cancela, salir de la función
+        if (!result.isConfirmed) {
+            return
+        }
+
+        dispatch(setLoading(true))
+        try {
+            await apiASN.sendMultiShipping({ formData })
+            
+            // Mostrar SweetAlert de éxito
+            await Swal.fire({
+                title: t('sendSuccess'),
+                icon: 'success',
+                confirmButtonColor: '#16a34a',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'dark:bg-gray-800',
+                    title: 'dark:text-white',
+                    confirmButton: 'px-4 py-2 text-white font-medium rounded-lg'
+                }
+            })
+            
+            // dispatch(clearSelectedOrders())
+            // dispatch(closeForm())
+            //router.push('/schedules')
+        } catch (error: any) {
+            console.error('Error sending shipment:', error)
+            
+            // Mostrar SweetAlert de error
+            await Swal.fire({
+                title: t('sendError'),
+                text: error?.message || 'Error al enviar el envío',
+                icon: 'error',
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'dark:bg-gray-800',
+                    title: 'dark:text-white',
+                    htmlContainer: 'dark:text-gray-300',
+                    confirmButton: 'px-4 py-2 text-white font-medium rounded-lg'
+                }
+            })
         } finally {
             dispatch(setLoading(false))
         }
@@ -393,7 +469,7 @@ const CreateShipmentPage = () => {
                         >
                             {t('cancel') || 'Cancelar'}
                         </Button>
-                        <Button
+                        {/* <Button
                             type="button"
                             onClick={handleSubmit}
                             disabled={loading}
@@ -409,7 +485,27 @@ const CreateShipmentPage = () => {
                                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    {t('createShipment') || 'Crear Envío'}
+                                    {t('saveShipment') || 'Guardar Envío'}
+                                </>
+                            )}
+                        </Button> */}
+                        <Button
+                            type="button"
+                            onClick={handleSendMultiShipping}
+                            disabled={loading}
+                            className="bg-green-600 hover:bg-green-700 text-white px-6"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader />
+                                    {t('sending') || 'Enviando...'}
+                                </>
+                            ) : (
+                                <>
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    {t('send') || 'Enviar'}
                                 </>
                             )}
                         </Button>

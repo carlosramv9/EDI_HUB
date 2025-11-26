@@ -182,5 +182,17 @@
   "quantityPlaceholder": "Cantidad",
   "devOrderNumberPlaceholder": "Número de orden",
   "engChangePlaceholder": "Cambio de ingeniería",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "sending": "Enviando...",
+  "sendShipment": "Enviar Envío",
+  "send": "Enviar",
+  "saveShipment": "Guardar Envío",
+  "confirmSendTitle": "¿Confirmar envío?",
+  "confirmSendText": "Está a punto de realizar el envío con {count} órdenes. Esta acción no se puede deshacer.",
+  "confirmSendHtml": "Está a punto de realizar el envío con <strong>{count} órdenes</strong>.<br/>Esta acción no se puede deshacer.",
+  "confirmButton": "Sí, enviar",
+  "cancelButton": "Cancelar",
+  "sendSuccess": "¡Envío enviado exitosamente!",
+  "sendError": "Error al enviar el envío",
+  "sendCancelled": "Envío cancelado"
 }

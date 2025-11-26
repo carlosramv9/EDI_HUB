@@ -10,6 +10,7 @@ import { useAppSelector } from '@/app/store';
 import { IOrder } from '@/interfaces/orders/IOrder';
 import { useASN } from '@/providers/asn/ASNProvider';
 import Loader from './ui/Loader';
+import { IAdvanceShippingNotice } from '@/interfaces/asn/IAdvanceShippingNotice';
 
 const labelClasses = "text-sm font-medium text-gray-700 mb-1.5"
 const inputClasses = classNames(

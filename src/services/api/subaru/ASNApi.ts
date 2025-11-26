@@ -23,6 +23,14 @@ class ASNApi extends BaseService<Record<any, any>> {
         }
         // return response;
     }
+
+    sendMultiShipping = async ({formData}: {formData: IAsnHeader}): Promise<void> => {
+        const response = await axiosInstance.post(this.buildUrl('Generate/Multi'), formData);
+        if (response.status !== 200) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        // return response;
+    }
 }
 
 const apiASN = new ASNApi();
