@@ -68,6 +68,7 @@ const ASNForm = () => {
             setValue('devOrderNumber', advanceShippingNotice.devOrderNumber);
             setValue('quantity', advanceShippingNotice.quantity);
             setValue('partUnit', advanceShippingNotice.partUnit);
+            setValue('asnHeaderId', advanceShippingNotice.asnHeaderId);
         }
     }, [advanceShippingNotice])
 
@@ -159,7 +160,7 @@ const ASNForm = () => {
                         {errors.carrierRef && <p className="text-red-500 text-xs mt-1">{errors.carrierRef.message}</p>}
                     </div>
 
-                    {/* <div>
+                    <div>
                         <label className={labelClasses}>Route Number</label>
                         <input
                             {...register('routerNumber', {
@@ -181,7 +182,7 @@ const ASNForm = () => {
                             placeholder="Authorization Number"
                         />
                         {errors.authorizationNumber && <p className="text-red-500 text-xs mt-1">{errors.authorizationNumber.message}</p>}
-                    </div> */}
+                    </div>
 
                     <div>
                         <label className={labelClasses}>Part Number</label>

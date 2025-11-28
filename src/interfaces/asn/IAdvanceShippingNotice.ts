@@ -20,4 +20,5 @@ export interface IAdvanceShippingNotice {
     controlId?: number;
     purposeCode?: number;
     createdById?: number;
+    asnHeaderId?: number;
 }

@@ -33,6 +33,7 @@ import { useFilter } from '@/providers/filters/FilterProvider';
 import { toggleOrderSelection, selectAllOrders, clearSelectedOrders } from '@/store/features/selectedOrders/selectedOrdersSlice';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/Button';
+import { toast } from 'react-toastify';
 
 const SchedulesTable = () => {
     const dispatch = useAppDispatch();
@@ -170,9 +171,28 @@ const SchedulesTable = () => {
     const someSelected = selectedOrders.length > 0 && selectedOrders.length < orders.length;
 
     const handleCreateShipment = () => {
-        if (selectedOrders.length > 1) {
+        if (selectedOrders.length >= 1) {
             router.push('/schedules/create-shipment');
         }
+    };
+
+    // Función para sugerir órdenes del día actual
+    const handleSuggestTodayOrders = () => {
+        const today = dayjs().format('YYYY-MM-DD');
+        const todayOrders = orders.filter(order => {
+            if (!order.shipDate) return false;
+            const orderDate = dayjs(order.shipDate).format('YYYY-MM-DD');
+            return orderDate === today;
+        });
+
+        if (todayOrders.length < 1) {
+            toast.warning(t('noOrdersToday') || 'No hay órdenes del día actual para crear un envío');
+            return;
+        }
+
+        // Seleccionar todas las órdenes del día actual
+        dispatch(selectAllOrders(todayOrders));
+        toast.success(`${todayOrders.length} ${todayOrders.length === 1 ? 'orden' : 'órdenes'} del día actual seleccionada${todayOrders.length === 1 ? '' : 's'}`);
     };
 
     return (
@@ -184,6 +204,16 @@ const SchedulesTable = () => {
                             <WithPermissions permissions={['Proveedor', 'Administrador']}>
                                 <ScheduleUploadModal buttonClassName="px-3 py-2 rounded-md flex gap-2 items-center hover:cursor-pointer bg-blue-500 hover:bg-blue-600 hover:text-white text-white text-sm" />
                             </WithPermissions>
+                            <Button
+                                onClick={handleSuggestTodayOrders}
+                                className="px-3 py-2 rounded-md flex gap-2 items-center hover:cursor-pointer bg-purple-500 hover:bg-purple-600 text-white text-sm transition-colors"
+                                title="Seleccionar órdenes del día actual"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                </svg>
+                                {t('suggestTodayOrders') || 'Sugerir Órdenes de Hoy'}
+                            </Button>
                             <Input type="text" className="w-64" placeholder="Buscar (Orden, ASN, Parte, etc.)..." value={search} onChange={(e) => setSearch(e.target.value)} />
                             <DatePickerWithRange date={date} setDate={setDate} />
                             <div className="ml-auto">
@@ -202,7 +232,7 @@ const SchedulesTable = () => {
                                         {selectedOrders.length}
                                     </span>
                                 </div>
-                                {selectedOrders.length > 1 && (
+                                {selectedOrders.length >= 1 && (
                                     <Button
                                         onClick={handleCreateShipment}
                                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
