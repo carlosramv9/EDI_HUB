@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Input } from '@/components/ui/Input'
+import { Input } from '@/components/ui/input'
 import { IAdvanceShippingNotice } from '@/interfaces/asn/IAdvanceShippingNotice'
 import { IOrder } from '@/interfaces/orders/IOrder'
 import { useTranslations } from 'next-intl'

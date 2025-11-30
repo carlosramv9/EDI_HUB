@@ -18,7 +18,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { IASNProcessed } from '@/interfaces/asn/IASNProcessed';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { DatePickerWithRange } from '@/components/shared/DatePickerRange';
 import { DateRange } from 'react-day-picker';
@@ -115,7 +115,7 @@ const ASNProcessedTable = () => {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>{t('asnNumber')}</TableHead>
-                                        <TableHead>{t('orderNumber')}</TableHead>
+                                        {/* <TableHead>{t('orderNumber')}</TableHead> */}
                                         <TableHead>{t('dateProcessed')}</TableHead>
                                         <TableHead>{t('typeSend')}</TableHead>
                                         <TableHead>{t('statusSend')}</TableHead>
@@ -132,7 +132,7 @@ const ASNProcessedTable = () => {
                                                 <ASNProcessedContextMenu asn={asn} buttonRef={buttonRef} menuRef={menuRef} />
                                             </TableCell>
                                             <TableCell>{asn.asnNumber}</TableCell>
-                                            <TableCell>{asn.devOrderNumber}</TableCell>
+                                            {/* <TableCell>{asn.devOrderNumber}</TableCell> */}
                                             <TableCell>{formatDate(asn.dateProcessed || '')}</TableCell>
                                             <TableCell>{asn.typeSendName}</TableCell>
                                             <TableCell>

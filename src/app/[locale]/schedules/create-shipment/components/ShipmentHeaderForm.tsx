@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Input } from '@/components/ui/Input'
+import { Input } from '@/components/ui/input'
 import { IAsnHeader } from '@/interfaces/asn/IAsnHeader'
 import { useTranslations } from 'next-intl'
 import dayjs from 'dayjs'

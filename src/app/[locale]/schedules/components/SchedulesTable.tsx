@@ -22,7 +22,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { IOrder } from '@/interfaces/orders/IOrder';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { DatePickerWithRange } from '@/components/shared/DatePickerRange';
 import { DateRange } from 'react-day-picker';
