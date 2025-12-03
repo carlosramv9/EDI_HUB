@@ -223,5 +223,6 @@
   "errorNetwork": "Connection error. Please check your internet connection and try again.",
   "shipmentCreatedSuccess": "Shipment created successfully",
   "selectAtLeastOneOrder": "You must select at least 1 order to create a shipment",
-  "noOrdersToday": "There are no orders from today to create a shipment"
+  "noOrdersToday": "There are no orders from today to create a shipment",
+  "itemsPerPage": "Items per page"
 }

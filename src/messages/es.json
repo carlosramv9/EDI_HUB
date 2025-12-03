@@ -225,5 +225,6 @@
   "errorNetwork": "Error de conexión. Por favor, verifique su conexión a internet e intente nuevamente.",
   "shipmentCreatedSuccess": "Envío creado exitosamente",
   "selectAtLeastOneOrder": "Debe seleccionar al menos 1 orden para crear un envío",
-  "noOrdersToday": "No hay órdenes del día actual para crear un envío"
+  "noOrdersToday": "No hay órdenes del día actual para crear un envío",
+  "itemsPerPage": "Registros por página"
 }

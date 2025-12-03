@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useConfiguration } from '@/providers/configuration/ConfigurationProvider';
 import { useAppSelector, useAppDispatch } from '@/app/store';
 import Loader from '@/components/ui/Loader';
-import PaginationSimple from '@/components/shared/PaginationSimple';
+import FrontendPagination from '@/components/shared/FrontendPagination';
 import TableProvider, { TableContextProps, useTable, useTableContext } from '@/providers/TableProvider';
 import ScheduleUploadModal from './ScheduleUploadModal';
 import ScheduleContextMenu from './ScheduleContextMenu';
@@ -64,12 +64,23 @@ const SchedulesTable = () => {
     const router = useRouter();
     const { setViewTitle } = useConfiguration();
     const { setFilters } = useFilter();
+    
+    // Estados para paginación en frontend
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
-    // Efecto para la carga inicial - solo se ejecuta una vez
+    // Efecto para la carga inicial - asegurar que siempre se traigan todos los datos
     useEffect(() => {
-        if (searchModel) {
-            getOrdersList(searchModel);
+        if (searchModel && Object.keys(searchModel).length > 0) {
+            // Asegurar que siempre se traigan todos los datos del backend
+            const sm = {
+                ...searchModel,
+                pageSize: 999999, // Traer todos los datos del backend
+                page: 1 // No se usa para paginación del backend, pero lo mantenemos por compatibilidad
+            };
+            getOrdersList(sm);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchModel]);
 
     // Sincronizar estados locales cuando cambie el searchModel desde el slice
@@ -95,10 +106,11 @@ const SchedulesTable = () => {
         if ((search || date)) {
             const timer = setTimeout(() => {
                 var sm = {
-                    ...searchModel,
+                    ...(searchModel || {}),
                     orderColumn: 'id',
                     orderDirection: 'desc',
-                    page: 1, // Resetear a página 1 cuando cambien los filtros
+                    page: 1, // No se usa para paginación del backend, pero lo mantenemos por compatibilidad
+                    pageSize: 999999, // Traer todos los datos del backend
                     search: search,
                     startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
                     endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
@@ -106,11 +118,13 @@ const SchedulesTable = () => {
                     onlyPending: true
                 };
                 setFilters('schedules', sm);
-                // Hacer la consulta inmediatamente después de actualizar los filtros
-                // getOrdersList(sm);
+                getOrdersList(sm);
+                // Resetear a página 1 cuando cambien los filtros
+                setCurrentPage(1);
             }, 500);
             return () => clearTimeout(timer);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, date]);
 
     useEffect(() => {
@@ -120,7 +134,7 @@ const SchedulesTable = () => {
                 orderColumn: 'id',
                 orderDirection: 'desc',
                 page: 1,
-                pageSize: 10,
+                pageSize: 999999, // Traer todos los datos del backend
                 startDate: date?.from ? dayjs(date.from).format('YYYY-MM-DD') : undefined,
                 endDate: date?.to ? dayjs(date.to).format('YYYY-MM-DD') : undefined,
                 active: true,
@@ -147,9 +161,34 @@ const SchedulesTable = () => {
 
     const setSearchModel = (sm: SMOrders) => {
         setFilters('schedules', sm);
-        // Hacer la consulta para cambios de paginación
+        // Hacer la consulta para cambios de filtros (no para paginación, ya que es en frontend)
         getOrdersList(sm);
     }
+    
+    // Calcular los datos paginados para mostrar en la tabla
+    const getPaginatedOrders = () => {
+        if (!orders || !Array.isArray(orders) || orders.length === 0) {
+            return [];
+        }
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return orders.slice(startIndex, endIndex);
+    };
+    
+    const paginatedOrders = getPaginatedOrders();
+    
+    // Manejar cambio de página
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        // Scroll al inicio de la tabla
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    
+    // Manejar cambio de items por página
+    const handleItemsPerPageChange = (newItemsPerPage: number) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Resetear a página 1 cuando cambie el tamaño
+    };
 
     const handleOrderSelection = (order: IOrder) => {
         dispatch(toggleOrderSelection(order));
@@ -160,15 +199,28 @@ const SchedulesTable = () => {
     };
 
     const handleSelectAll = () => {
-        if (selectedOrders.length === orders.length) {
-            dispatch(clearSelectedOrders());
+        // Seleccionar/deseleccionar solo las órdenes de la página actual
+        const allCurrentPageSelected = paginatedOrders.every(order => isOrderSelected(order.id));
+        if (allCurrentPageSelected) {
+            // Deseleccionar todas las de la página actual
+            paginatedOrders.forEach(order => {
+                if (isOrderSelected(order.id)) {
+                    dispatch(toggleOrderSelection(order));
+                }
+            });
         } else {
-            dispatch(selectAllOrders(orders));
+            // Seleccionar todas las de la página actual
+            paginatedOrders.forEach(order => {
+                if (!isOrderSelected(order.id)) {
+                    dispatch(toggleOrderSelection(order));
+                }
+            });
         }
     };
 
-    const allSelected = orders.length > 0 && selectedOrders.length === orders.length;
-    const someSelected = selectedOrders.length > 0 && selectedOrders.length < orders.length;
+    // Verificar si todas las órdenes de la página actual están seleccionadas
+    const allSelected = paginatedOrders.length > 0 && paginatedOrders.every(order => isOrderSelected(order.id));
+    const someSelected = paginatedOrders.some(order => isOrderSelected(order.id)) && !allSelected;
 
     const handleCreateShipment = () => {
         if (selectedOrders.length >= 1) {
@@ -178,9 +230,14 @@ const SchedulesTable = () => {
 
     // Función para sugerir órdenes del día actual
     const handleSuggestTodayOrders = () => {
+        if (!orders || !Array.isArray(orders) || orders.length === 0) {
+            toast.warning(t('noOrdersToday') || 'No hay órdenes del día actual para crear un envío');
+            return;
+        }
+        
         const today = dayjs().format('YYYY-MM-DD');
         const todayOrders = orders.filter(order => {
-            if (!order.shipDate) return false;
+            if (!order || !order.shipDate) return false;
             const orderDate = dayjs(order.shipDate).format('YYYY-MM-DD');
             return orderDate === today;
         });
@@ -194,6 +251,13 @@ const SchedulesTable = () => {
         dispatch(selectAllOrders(todayOrders));
         toast.success(`${todayOrders.length} ${todayOrders.length === 1 ? 'orden' : 'órdenes'} del día actual seleccionada${todayOrders.length === 1 ? '' : 's'}`);
     };
+    
+    // Resetear página cuando cambien los datos
+    useEffect(() => {
+        if (orders && Array.isArray(orders)) {
+            setCurrentPage(1);
+        }
+    }, [orders?.length]);
 
     return (
         <TableProvider>
@@ -216,12 +280,24 @@ const SchedulesTable = () => {
                             </Button>
                             <Input type="text" className="w-64" placeholder="Buscar (Orden, ASN, Parte, etc.)..." value={search} onChange={(e) => setSearch(e.target.value)} />
                             <DatePickerWithRange date={date} setDate={setDate} />
-                            <div className="ml-auto">
-                                <PaginationSimple pageSize={10} searchModel={searchModel ?? {}} setSearchModel={setSearchModel} totalRecords={total} />
-                            </div>
                         </div>
                     </CardContent>
                 </Card>
+                {/* Paginación en frontend */}
+                {!loading && orders && Array.isArray(orders) && orders.length > 0 && (
+                    <Card>
+                        <CardContent className="p-0">
+                            <FrontendPagination
+                                currentPage={currentPage}
+                                totalItems={orders.length}
+                                itemsPerPage={itemsPerPage}
+                                onPageChange={handlePageChange}
+                                onItemsPerPageChange={handleItemsPerPageChange}
+                                itemsPerPageOptions={[10, 20, 50, 100]}
+                            />
+                        </CardContent>
+                    </Card>
+                )}
                 {selectedOrders.length > 0 && (
                     <Card>
                         <CardContent className="px-5 py-2">
@@ -275,7 +351,8 @@ const SchedulesTable = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {orders?.map((order: IOrder, index: number) => (
+                                    {paginatedOrders && paginatedOrders.length > 0 ? (
+                                        paginatedOrders.map((order: IOrder, index: number) => (
                                         <TableRow
                                             key={order.id}
                                             className={isOrderSelected(order.id) ? "bg-blue-50 dark:bg-blue-900/20" : ""}
@@ -301,7 +378,14 @@ const SchedulesTable = () => {
                                             <TableCell>{order.quantity}</TableCell>
                                             <TableCell>{order.shipTo}</TableCell>
                                         </TableRow>
-                                    ))}
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={10} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                                                {t('noData') || 'No hay datos para mostrar'}
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </CardContent>
