@@ -224,5 +224,6 @@
   "shipmentCreatedSuccess": "Shipment created successfully",
   "selectAtLeastOneOrder": "You must select at least 1 order to create a shipment",
   "noOrdersToday": "There are no orders from today to create a shipment",
-  "itemsPerPage": "Items per page"
+  "itemsPerPage": "Items per page",
+  "noData": "No data available"
 }
