@@ -222,24 +222,16 @@ const CreateShipmentPage = () => {
 
         dispatch(setLoading(true))
         try {
-            // Enviar cada tipo de orden secuencialmente para evitar conflictos de transacciones
-            let successCount = 0
-            const totalTypes = Object.keys(formDataByType).length
+            // Recopilar todos los headers de todos los tipos en un solo array
+            const allHeaders = Object.values(formDataByType)
             
-            for (const [type, formData] of Object.entries(formDataByType)) {
-                try {
-                    await apiASN.sendMultiShipping({ formData })
-                    successCount++
-                    
-                    // Mostrar progreso si hay múltiples tipos
-                    if (totalTypes > 1) {
-                        toast.info(`Tipo "${type}" enviado (${successCount}/${totalTypes})`)
-                    }
-                } catch (error: any) {
-                    console.error(`Error enviando tipo ${type}:`, error)
-                    throw new Error(`Error al enviar órdenes del tipo "${type}": ${error.message || 'Error desconocido'}`)
-                }
+            // Validar que haya al menos un header
+            if (allHeaders.length === 0) {
+                throw new Error('No hay headers para enviar')
             }
+            
+            // Enviar todos los headers en una sola llamada
+            await apiASN.sendMultiShipping({ headers: allHeaders })
             
             // Limpiar borrador al guardar exitosamente
             clearShipmentDraft()

@@ -24,8 +24,11 @@ class ASNApi extends BaseService<Record<any, any>> {
         // return response;
     }
 
-    sendMultiShipping = async ({formData}: {formData: IAsnHeader}): Promise<void> => {
-        const response = await axiosInstance.post(this.buildUrl('Generate/Multi'), formData);
+    sendMultiShipping = async ({headers}: {headers: IAsnHeader[]}): Promise<void> => {
+        const requestData = {
+            headers: headers
+        };
+        const response = await axiosInstance.post(this.buildUrl('Generate/Multi'), requestData);
         if (response.status !== 200) {
             throw new Error(`Error: ${response.status}`);
         }
